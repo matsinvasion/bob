@@ -1,0 +1,12 @@
+django == 1.5.1
+south
+newrelic
+smartmin
+gunicorn
+requests
+dj-database-url
+psycopg2
+django-crispy-forms
+django-angular
+django-tastypie
+django-registration

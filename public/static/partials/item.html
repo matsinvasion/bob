@@ -1,0 +1,30 @@
+
+  <!--item functionality for a given list goes here-->
+</p>item functionality goes here.</p>
+
+<div ng-controller="itemCtrl">
+  <h2 style="color:#35486e">Add items.</h2>
+   <form name="freshlist_itemForm">
+
+     <input type="text" ng-model="item_description" placeholder="Add item"/>
+     <br>
+     <input type="text" ng-model="note" placeholder="Add note for this item.">
+
+     <span><input type="button" type="submit" ng-click="addItem(freshlist_itemForm.$valid)" value="Add"></span>
+     <input type="submit" name="submit" ng-click="call_func()" value="call">
+   </form>
+   <ul>
+     <li ng-repeat="order_item in order_items">
+       <a ng-click="delete($index)">delete</a>
+       <p> [[order_item.item_description]]</p>
+       <p>2 kg white rice</p>
+     </li>
+     <p> number of items [[num_of_items()]]</p>
+   </ul>
+
+</div>
+<!-- items already in lists-->
+<li ng-repeat="item in list.item">
+  <a ng-click="deleteFromList($index,list)">delete</a>
+  <p>[[item.item_description + item.id]]</p>
+</li>

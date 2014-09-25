@@ -1,0 +1,9 @@
+{% extends "public_base.html"%}
+{% block order-content %}
+<form method="post" action=".">
+  {% csrf_token %}
+  {{form}}
+  <input type="submit" value="signup">
+</form>
+
+{% endblock %}

@@ -1,0 +1,13 @@
+{%extends "public_base.html"%}
+{% block order-content %}
+{% load widget_tweaks%}
+<form method="POST" action="{% url 'checkout'%}">
+  {% csrf_token%}
+  {% render_field form.address placeholder=form.address.help_text %}<br />
+  {% render_field form.comment placeholder=form.comment.help_text %}
+  <br />
+  <input type="submit" name="checkout" value="place order">
+
+</form>
+<div ui-view></div>
+{% endblock%}
