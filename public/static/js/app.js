@@ -37,6 +37,23 @@ app.factory('utils',function(){
 }
 }
 });
+populate_scope_values = function ($scope,Restangular) {
+  //EndPoint expects JSON
+  order_items = JSON.stringify($scope.order_items);
+  req_object = '{"objects":'+order_items+'}';
+  //create our items at this point
+    return req_object;
+}
+
+// items request resource
+create_itemresource = function ($scope, Restangular) {
+  //collection of items | authenicated too
+  var post_data = populate_scope_values($scope,Restangular)
+
+    // Create our item
+  return  Restangular.all('orderlist/').post(post_data)
+
+}
 
 app.config(['$stateProvider',function($stateProvider){
   //multiple views
@@ -53,10 +70,11 @@ app.config(['$stateProvider',function($stateProvider){
       //match a listID of 1 to 8 characters
       //url becomes /lists/list/id
       url:'list/{id:[0-9]{1,8}}',
+      //this template is populated in a ui-view in the template list.html
       templateUrl:'/static/partials/item.html',
       //implement controller to load a lists items
       //get needed parameters from $stateParam
-      controller:['$scope','Restangular','$stateParams','utils',function($scope,Restangular,$stateParams,utils){
+      controller:['$scope','$state','Restangular','$stateParams','utils',function($scope,$state,Restangular,$stateParams,utils){
 
           //lookup items in this list
           user_object = Restangular.all('user').getList().then(function(users){
@@ -73,6 +91,42 @@ app.config(['$stateProvider',function($stateProvider){
             //get current list
             $scope.list=utils.getList(lists,$stateParams.id);
           })
+
+          // create(POST) item and add it to target list
+          $scope.order_items = [];
+          $scope.addItem = function(isValid){
+            if(isValid){
+
+              //build our order item with required units
+              $scope.order_items.unshift({item_description:$scope.item_description,note:$scope.note,
+                created_by:user,modified_by:user,item_stamp:$scope.random_number,
+                orderlist:$scope.list.resource_uri});
+              $scope.submitted = true;
+
+              //create item
+              //returns a promise, reload the state
+            create_item =  create_itemresource($scope,Restangular).then(function(){
+                console.log("successful creation and state is "+ $state.current.name)
+
+              });
+
+            }
+
+            //initialize our item text field
+            $scope.item_description = '';
+            $scope.note = '';
+            $state.transitionTo("lists.list",$stateParams,{
+              //force transition default:false
+              reload:true,
+              //broadcast $stateChangeStart and $stateChangesuccess event default:false
+              notify:true,
+              //inherit url paramtere from current url
+              inherit:false
+            })
+
+            }
+
+
           //remove item from list
           $scope.deleteFromList=function(idx,list){
             var current_item = list.item[idx];
@@ -88,6 +142,9 @@ app.config(['$stateProvider',function($stateProvider){
               $scope.list.item.splice(idx,1);
             })
           }
+
+
+
 
 
       }

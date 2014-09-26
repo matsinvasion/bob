@@ -1,8 +1,7 @@
-
-  <!--item functionality for a given list goes here-->
+<!--item functionality for a given list goes here-->
 </p>item functionality goes here.</p>
 
-<div ng-controller="itemCtrl">
+<div>
   <h2 style="color:#35486e">Add items.</h2>
    <form name="freshlist_itemForm">
 
@@ -24,7 +23,7 @@
 
 </div>
 <!-- items already in lists-->
-<li ng-repeat="item in list.item">
+<li ng-repeat="item in list.item | orderBy:'-created_on'">
   <a ng-click="deleteFromList($index,list)">delete</a>
   <p>[[item.item_description + item.id]]</p>
 </li>
