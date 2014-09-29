@@ -7,7 +7,8 @@
  <ul>
    <li ng-repeat="list in lists">
      <a ng-click="delete($index)">delete</a>
-     <p><a ui-sref="lists.list({id:list.id})">[[list.title+list.id]]</a></p>
+     <p><a ui-sref="lists.list({id:list.id})">[[list.title+list.id]]</a><span ><a ui-sref="edit({id:list.id})">edit</a></span></p>
+
    </li>
    <p> number of lists [[num_of_lists()]]</p>
 

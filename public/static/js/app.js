@@ -1,6 +1,6 @@
 //declare app level module that depends on services,controllers
 //register e on module loading alternative symbols for our django environment
-app = angular.module('GroceryList',['restangular','ui.bootstrap','ui.router','itemResourceController','listResourceController']).
+app = angular.module('GroceryList',['restangular','xeditable','ui.bootstrap','ui.router','itemResourceController','listResourceController']).
   config(function($interpolateProvider,$httpProvider,RestangularProvider){
     $httpProvider.defaults.xsrfCookieName= 'csrftoken';
     $httpProvider.defaults.xsrfHeaderName='X-CSRFToken';
@@ -54,6 +54,37 @@ create_itemresource = function ($scope, Restangular) {
   return  Restangular.all('orderlist/').post(post_data)
 
 }
+app.run(function(editableOptions){
+  editableOptions.theme='bs3';
+})
+app.controller('edit',['$scope','$state','$stateParams','Restangular',function($scope,$state,$stateParams,Restangular){
+  $scope.editList=function(id){
+    //edit, endpoint expects json
+
+    var edit={title:$scope.new_name,scheduled_time:$scope.scheduledTime};
+    var patch_data = JSON.stringify(edit);
+    console.log("patch data is "+patch_data)
+
+    //make call
+    Restangular.all('orderlist/'+id+'/').patch(patch_data).then(function(){
+      //success
+      //close and reload parent state
+
+      $scope.dismiss('saved');
+      $state.transitionTo("lists.list",$stateParams,{
+      reload:true
+      })
+    },
+    //error
+    function(){
+      alert("jeeze something went wrong, could try that again please?");
+    }
+    )
+
+
+  }
+}])
+
 
 app.config(['$stateProvider',function($stateProvider){
   //multiple views
@@ -90,6 +121,7 @@ app.config(['$stateProvider',function($stateProvider){
             lists = lists;
             //get current list
             $scope.list=utils.getList(lists,$stateParams.id);
+            //pass custom data on to child state
           })
 
           // create(POST) item and add it to target list
@@ -142,21 +174,13 @@ app.config(['$stateProvider',function($stateProvider){
               $scope.list.item.splice(idx,1);
             })
           }
-
-
-
-
-
-      }
-    )
-
-
-
+        }
+        )
       }]
-    });
+    })
 
-
-  /**  .state('lists.createlist',{
+/**
+   .state('lists.createlist',{
       url:'new', //new list
       onEnter:['$stateParams','$state','$modal',function($stateParams,$state,$modal){
         $modal.open({
@@ -184,13 +208,52 @@ app.config(['$stateProvider',function($stateProvider){
 
       }]
 
+    })**/
+    .state('edit',{
+      url:'/list/{id:[0-9]{1,8}}/edit',
+      //controller: listResourceController.listCtrl,
+      //templateUrl:'/static/partials/editlist.html',
+      onEnter:['$stateParams','$state','$modal',function($stateParams,$state,$modal){
+        $modal.open({
+          templateUrl:'/static/partials/editlist.html',
+          keyboard:false,
+          backdrop:'static',
+
+          //provide logic
+          controller:['$scope','$state','utils','Restangular',function($scope,$state,utils,Restangular){
+            //lookup items in this list
+            user_object = Restangular.all('user').getList().then(function(users){
+            user=users[0].resource_uri;
+            user_name=users[0].username;
+            //GET lists created by the user
+            //Restangular objects are self aware and can make know how to make their own requests
+            //$object enables use these lists in template
+
+            orderList_object = Restangular.all('orderlist/?user__username='+user_name+'&format=json&is_active=true');
+
+            orderList_object.getList().then(function(lists){
+              lists = lists;
+              //get current list
+              $scope.list=utils.getList(lists,$stateParams.id);
+              $scope.lists = lists
+            })
+            $scope.dismiss = function(){
+            //remove modal, something cameup
+             $scope.$dismiss('clicked');
+             //transition back to parent state
+             return $state.transitionTo("lists.list",$stateParams,{
+               //show list in view
+               reload:true
+             });
+          }
+          }
+          )
+          }]
+
+        })
+      }]
     })
-    .state('lists.list',{
-      //match a listID of 1 to 8 characters
-      url:'list/{id:[0-9]{1,8}}',
-      templateUrl:'/static/partials/item.html'
-    });
-    //.state**/
+    //.state()
   }]);
 app.config(['$urlRouterProvider',function($urlRouterProvider){
   $urlRouterProvider.otherwise("/");

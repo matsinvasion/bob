@@ -23,7 +23,7 @@ createListResource = function ($scope, Restangular) {
 //define list controller
 var listResourceController = angular.module('listResourceController',[]);
 
-listResourceController.controller('listCtrl',['$scope','Restangular','$q',function($scope,Restangular){
+listResourceController.controller('listCtrl',['$scope','utils','$stateParams','Restangular','$q',function($scope,utils,$stateParams,Restangular){
   //avail our scope in browser console
   window.listResource_SCOPE = $scope;
 
@@ -45,7 +45,10 @@ listResourceController.controller('listCtrl',['$scope','Restangular','$q',functi
     $scope.num_of_lists = function(){
       return $scope.lists.length;
     }
+
+    $scope.current_list=utils.getList($scope.lists,$stateParams.id);
     });
+
   $scope.listobject = {};
   $scope.createlist=function(isValid){
     if(isValid){
