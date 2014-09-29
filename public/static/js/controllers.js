@@ -39,8 +39,6 @@ listResourceController.controller('listCtrl',['$scope','utils','$stateParams','R
     orderList_object = Restangular.all('orderlist/?user__username='+$scope.user_name+'&format=json&is_active=true');
     $scope.lists = orderList_object.getList().$object;
 
-
-
     //how many lists does user own
     $scope.num_of_lists = function(){
       return $scope.lists.length;
@@ -48,32 +46,6 @@ listResourceController.controller('listCtrl',['$scope','utils','$stateParams','R
 
     $scope.current_list=utils.getList($scope.lists,$stateParams.id);
     });
-
-  $scope.listobject = {};
-  $scope.createlist=function(isValid){
-    if(isValid){
-      //object expected by resource
-      $scope.listobject = {title:$scope.list_name,scheduled_time:$scope.scheduledTime,created_by:$scope.user,modified_by:$scope.user,user:$scope.user}
-      $scope.submitted = true;
-
-      post_update_data = createListResource($scope,Restangular).then(
-                        function () {
-
-                            // success!
-                            //initialize list name field
-                            $scope.list_name = '';
-                            $scope.lists.unshift($scope.listobject);
-                        },
-
-                        function (){
-                            // error!
-
-                        }
-
-                     )
-
-    }
-  }
   //delete a list from user view
   //make is_active=false in database instead of complete removal
   //use Array.Splice to remove a particular item from array
