@@ -21,23 +21,24 @@ v1_api.register(OrderResource())
 
 
 # Uncomment the next two lines to enable the admin:
-# from django.contrib import admin
-# admin.autodiscover()
+from django.contrib import admin
+admin.autodiscover()
 
 
 urlpatterns = patterns('',
-    
+
     url(r'^$',home,name="homepage"),
     url(r'^orders/', include('public.urls')),
     url(r'^api/', include(v1_api.urls)),
     #user default registration backend urlconf with django-registration
-    url(r'^accounts/', include('registration.backends.default.urls'))
+    url(r'^accounts/', include('registration.backends.default.urls')),
+    url(r'^users/', include('smartmin.users.urls')),
 
     # Uncomment the admin/doc line below to enable admin documentation:
-    # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
+    url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
     # Uncomment the next line to enable the admin:
-    # url(r'^admin/', include(admin.site.urls)),
+    url(r'^admin/', include(admin.site.urls)),
 )
 # Static file patterns
 urlpatterns += patterns('',
