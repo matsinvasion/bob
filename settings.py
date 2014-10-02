@@ -106,17 +106,17 @@ MIDDLEWARE_CLASSES = (
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
-ROOT_URLCONF = 'freshbunch.urls'
+ROOT_URLCONF = 'urls'
 
 # Python dotted path to the WSGI application used by Django's runserver.
-WSGI_APPLICATION = 'freshbunch.wsgi.application'
+WSGI_APPLICATION = 'wsgi.application'
 PROJECT_ROOT =os.path.abspath(os.path.dirname(__file__))
 
 TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
-    os.path.join(PROJECT_ROOT,"templates")
+    os.path.join(PROJECT_ROOT,"templates"),
 
 )
 #crispy-forms configuration
@@ -135,9 +135,11 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # Uncomment the next line to enable the admin:
-    # 'django.contrib.admin',
+    'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
-    # 'django.contrib.admindocs',
+    'django.contrib.admindocs',
+    'guardian',
+#    'smartmin',
     'public',
     'stores',
     'items',
@@ -146,11 +148,34 @@ INSTALLED_APPS = (
     'south',
     'crispy_forms',
     'djangular',
-    'widget_tweaks',
+#    'widget_tweaks',
     'tastypie',
-    'registration'
+    'registration',
+
+#    'smartmin',
+
 
 )
+#configure smartmin CRUDL permissions on all objects
+PERMISSIONS ={
+  (
+  'create',#can create object
+  'read',#can read object details
+  'list',# can view lists f objects
+  'update',# can update details of objects
+  'delete',#can remove objects
+
+  )
+
+}
+#assigns permissions that each group should have
+GROUP_PERMISSIONS={
+  "administrator":('auth.user.*','orders.order.*','orders.orderlist.*',
+  'items.item.*')
+}
+#required by guardian
+ANONYMOUS_USER_ID = 1
+
 
 #Email sending backend
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
@@ -178,6 +203,14 @@ LOGGING = {
             'level': 'ERROR',
             'filters': ['require_debug_false'],
             'class': 'django.utils.log.AdminEmailHandler'
+        },
+        'applogfile':{
+            'level':'ERROR',
+            'class':'logging.handlers.RotatingFileHandler',
+            'filename':os.path.join(PROJECT_ROOT,"freshbunch.log"),
+            'maxBytes':1024*1024*15,#15mb
+            'backupCount':10,
+
         }
     },
     'loggers': {
@@ -186,7 +219,12 @@ LOGGING = {
             'level': 'ERROR',
             'propagate': True,
         },
-    }
+        'freshbunch':{
+        'handlers': ['applogfile',],
+        'level':'ERROR'
+        },
+    },
+
 }
 import dj_database_url
 
