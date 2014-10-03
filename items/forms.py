@@ -1,6 +1,6 @@
 from .models import Item
 from django import forms
-from djangular.forms.angular_model import NgModelFormMixin
+
 from orders.models import Order, OrderList
 
 # order form for our user
