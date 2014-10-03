@@ -1,12 +1,12 @@
-django == 1.5.1
-south
+-e git+https://github.com/nyaruka/smartmin.git@to_django_1_7#egg=smartmin-dev
+django==1.7
 newrelic
-smartmin
 gunicorn
 requests
 dj-database-url
 psycopg2
 django-crispy-forms
-django-angular
 django-tastypie
-django-registration
+django-registration-redux
+django_guardian
+xlutils
