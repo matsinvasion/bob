@@ -201,7 +201,7 @@ LOGGING = {
             'class': 'django.utils.log.AdminEmailHandler'
         },
         'applogfile':{
-            'level':'ERROR',
+            'level':'DEBUG',
             'class':'logging.handlers.RotatingFileHandler',
             'filename':os.path.join(PROJECT_ROOT,"freshbunch.log"),
             'maxBytes':1024*1024*15,#15mb
@@ -217,7 +217,7 @@ LOGGING = {
         },
         'freshbunch':{
         'handlers': ['applogfile',],
-        'level':'ERROR'
+        'level':'DEBUG'
         },
     },
 
