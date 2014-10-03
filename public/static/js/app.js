@@ -22,7 +22,6 @@ app = angular.module('GroceryList',['restangular','xeditable','ui.bootstrap','ui
         extractedData = data;
       }
       return extractedData;
-
     });
 
   })
@@ -81,6 +80,39 @@ create_itemresource = function ($scope, Restangular) {
 app.run(function(editableOptions){
   editableOptions.theme='bs3';
 })
+app.controller('assigntask',['$scope','Restangular','$state','$stateParams',function($scope,Restangular,$state,$stateParams){
+
+  $scope.assign=function(){
+  user_object = Restangular.all('user').getList().then(function(user){
+    user_uri=user[0].resource_uri;
+
+    //order objnect
+    order_object = {address:$scope.address,mobile:$scope.mobile,
+    comment:$scope.comment,created_by:user_uri,modified_by:user_uri};
+    patch_object=JSON.stringify({order:order_object});
+
+    //update list to add order
+    Restangular.all('orderlist/'+$stateParams.id+'/').patch(patch_object).then(function(){
+      //dismiss modal
+      $scope.dismiss();
+      //transition to confirmation
+      $state.transitionTo('lists.confirmation',{
+        reload:true
+      })
+    })//orderlist promise ends here
+
+
+  })//user promise ends here
+
+
+
+  }
+  //on canceling moda
+  $scope.dismiss=function(){
+    $scope.$dismiss();
+  }
+
+}])
 app.controller('edit',['$scope','$state','$stateParams','Restangular',function($scope,$state,$stateParams,Restangular){
   $scope.editList=function(id){
     //edit, endpoint expects json
@@ -334,7 +366,22 @@ app.config(['$stateProvider',function($stateProvider){
         })
       }]
     })
-    //.state()
+    .state("assigntask",{
+      url :'/list/{id:[0-9]{1,8}}/assigntask',//listid/assigntask
+      onEnter:['Restangular','$stateParams','$state','$modal',function(Restangular,$stateParams,$state,$modal){
+        $modal.open({
+          templateUrl:'/static/partials/assigntask.html',
+        /**  controller:**/
+
+        })//modal functionality ends here
+      }]//end of onEnter
+
+    })//end of this state
+    .state('lists.confirmation',{
+      url:'orderconfirmation',
+      templateUrl:'/static/partials/confirmation.html'
+    })//end of confirmation state
+  //  .state()
   }]);
 app.config(['$urlRouterProvider',function($urlRouterProvider){
   $urlRouterProvider.otherwise("/");
