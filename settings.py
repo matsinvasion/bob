@@ -139,42 +139,38 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable admin documentation:
     'django.contrib.admindocs',
     'guardian',
-#    'smartmin',
     'public',
     'stores',
     'items',
     'orders',
-    'customers',
-    'south',
+#    'customers',
     'crispy_forms',
-    'djangular',
 #    'widget_tweaks',
     'tastypie',
-    'registration',
-
-#    'smartmin',
+ #   'registration',
+    'smartmin',
 
 
 )
 #configure smartmin CRUDL permissions on all objects
-PERMISSIONS ={
-  (
+PERMISSIONS={
+  '*':(
   'create',#can create object
   'read',#can read object details
   'list',# can view lists f objects
   'update',# can update details of objects
   'delete',#can remove objects
-
   )
 
 }
+#required by guardian
+ANONYMOUS_USER_ID = -1
 #assigns permissions that each group should have
 GROUP_PERMISSIONS={
-  "administrator":('auth.user.*','orders.order.*','orders.orderlist.*',
-  'items.item.*')
+  "Administrator":('auth.user.*','orders.order.*','orders.orderlist.*',
+  'items.item.*'),
 }
-#required by guardian
-ANONYMOUS_USER_ID = 1
+
 
 
 #Email sending backend
