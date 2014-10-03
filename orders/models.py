@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.conf import settings
 import datetime
 from decimal import Decimal
-from customers.models import Location
+
 
 
 
@@ -20,29 +20,30 @@ class Order(SmartModel):
                     ('D', "Delivered"), # the order has been delivered
                     ('X', "Cancelled")) # the order was cancelled
 
-  user = models.ForeignKey(User, null=True,
-                             help_text="The customer that owns this order, can be null")
+#  user = models.ForeignKey(User, null=True,
+#                             help_text="The customer that owns this order, can be null")
   address = models.CharField(max_length=140,
                                  help_text="Where should we deliver, 140 characters.")
   stage = models.CharField(max_length=1, default='S',
                              help_text="The state of this order")
+  mobile = models.CharField(max_length=15,help_text="A number we can reach at.")
 
   comment = models.TextField(max_length=140, help_text="Anything else, in 140 characters.")
 
-  started_at = models.DateTimeField(null=True,
-                                      help_text="When the order was first started")
-  paid_at = models.DateTimeField(null=True,
-                                   help_text="When the order was paid for")
-  confirmed_at = models.DateTimeField(null=True,
-                                       help_text="When the order was confirmed by freshbunch stuff")
-  recruited_at = models.DateTimeField(null=True,
-                                        help_text="When del_ind was recruited to deliver this order")
-  enroute_at = models.DateTimeField(null=True,
-                                      help_text="When del_individual picked up the order at the market")
-  delivered_at = models.DateTimeField(null=True,
-                                        help_text="When the order was delivered")
-  cancelled_at = models.DateTimeField(null=True,
-                                        help_text="When the order was cancelled")
+#  started_at = models.DateTimeField(null=True,
+#                                      help_text="When the order was first started")
+#  paid_at = models.DateTimeField(null=True,
+#                                   help_text="When the order was paid for")
+#  confirmed_at = models.DateTimeField(null=True,
+#                                       help_text="When the order was confirmed by freshbunch stuff")
+#  recruited_at = models.DateTimeField(null=True,
+#                                        help_text="When del_ind was recruited to deliver this order")
+#  enroute_at = models.DateTimeField(null=True,
+#                                      help_text="When del_individual picked up the order at the market")
+#  delivered_at = models.DateTimeField(null=True,
+#                                        help_text="When the order was delivered")
+#  cancelled_at = models.DateTimeField(null=True,
+#                                        help_text="When the order was cancelled")
 
   #def add_to_list(self,order):
     #add this order to its specific list
