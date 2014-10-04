@@ -114,31 +114,34 @@ app.controller('assigntask',['$scope','Restangular','$state','$stateParams',func
 
 }])
 app.controller('edit',['$scope','$state','$stateParams','Restangular',function($scope,$state,$stateParams,Restangular){
-  $scope.editList=function(id){
-    //edit, endpoint expects json
+  $scope.editList=function(id,isValid){
+    if(isValid){
+      //edit, endpoint expects json
 
-    var edit={title:$scope.new_name,scheduled_time:$scope.scheduledTime};
-    var patch_data = JSON.stringify(edit);
-    console.log("patch data is "+patch_data)
+      var edit={title:$scope.new_name,scheduled_time:$scope.scheduledTime};
+      var patch_data = JSON.stringify(edit);
+      console.log("patch data is "+patch_data)
 
-    //make call
-    Restangular.all('orderlist/'+id+'/').patch(patch_data).then(function(){
-      //success
-      //close and reload parent state
+      //make call
+      Restangular.all('orderlist/'+id+'/').patch(patch_data).then(function(){
+        //success
+        //close and reload parent state
 
-      $scope.dismiss('saved');
-      $state.transitionTo("lists.list",$stateParams,{
-      reload:true
-      })
-    },
-    //error
-    function(){
-      alert("jeeze something went wrong, could try that again please?");
+        $scope.dismiss('saved');
+        $state.transitionTo("lists.list",$stateParams,{
+        reload:true
+        })
+      },
+      //error
+      function(){
+        alert("jeeze something went wrong, could try that again please?");
+      }
+      )
+
+    }else if(!isValid){
+      alert("Be sure to provide list title and scheduled time");
     }
-    )
-
-
-  }
+  }//end of editList()
 }])
 
 app.controller('createlist',['$scope','$stateParams','$state','Restangular',
@@ -195,9 +198,11 @@ function($scope,$stateparams,$state,Restangular){
                         },
                         function (){
                             // error!
-                            alert("jeeze something went wrong")
+                            alert("jeeze something went wrong");
                         })
-    }//cool here
+    }else if(!isvalid){
+      alert("Be sure to provide a List Title and Scheduled Time");
+    }
   }
 
 }]).directive('datetimepicker',function(){
@@ -271,6 +276,8 @@ app.config(['$stateProvider',function($stateProvider){
 
               });
 
+            }else if(!isValid){
+              alert("Seems, you didn't provide a list item.")
             }
 
             //initialize our item text field
