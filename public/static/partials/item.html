@@ -3,23 +3,15 @@
 
 <div>
   <h2 style="color:#35486e">Add items.</h2>
-   <form name="freshlist_itemForm">
-
-     <input type="text" ng-model="item_description" placeholder="Add item"/>
+   <form name="freshlist_itemForm" novalidate>
+     <input type="text" ng-model="item_description" placeholder="Add item" required/>
      <br>
      <input type="text" ng-model="note" placeholder="Add note for this item.">
 
-     <span><input type="button" type="submit" ng-click="addItem(freshlist_itemForm.$valid)" value="Add"></span>
-     <input type="submit" name="submit" ng-click="call_func()" value="call">
+     <span><input type="button" type="submit" ng-click="addItem(freshlist_itemForm.$valid)" novalidate value="Add"></span>
+     <!--no validate prevents HTML5 validation since we provide our
+       own validation-->
    </form>
-   <ul>
-     <li ng-repeat="order_item in order_items">
-       <a ng-click="delete($index)">delete</a>
-       <p> [[order_item.item_description]]</p>
-       <p>2 kg white rice</p>
-     </li>
-     <p> number of items [[num_of_items()]]</p>
-   </ul>
 
 </div>
 <!-- items already in lists-->
