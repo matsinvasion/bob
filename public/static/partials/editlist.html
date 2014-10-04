@@ -3,14 +3,14 @@
 </div>
 <div class="modal-dialog">
 <form  name="editlistForm" ng-controller="edit">
-  <input ng-model="new_name"/>
+  <input ng-model="new_name" required/>
   <div class="input-group date">
-    <input type="text" datetimepicker ng-model="scheduledTime" class="form-control">
+    <input type="text" datetimepicker ng-model="scheduledTime" class="form-control" required>
     <span class="input-group" style="width:0">
     </span></span>
   </div>
 
-  <input type="submit" ng-click="editList(list.id)" value="done">
+  <input type="submit" ng-click="editList(list.id,editlistForm.$valid)" value="done">
 </form>
 <button class="btn btn-danger" ng-click="dismiss()">cancel</button>
 </div>
