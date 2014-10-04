@@ -82,34 +82,36 @@ app.run(function(editableOptions){
 })
 app.controller('assigntask',['$scope','Restangular','$state','$stateParams',function($scope,Restangular,$state,$stateParams){
 
-  $scope.assign=function(){
-  user_object = Restangular.all('user').getList().then(function(user){
-    user_uri=user[0].resource_uri;
+  $scope.assign=function(isValid){
+    if(isValid){
+      user_object = Restangular.all('user').getList().then(function(user){
+        user_uri=user[0].resource_uri;
 
-    //order objnect
-    order_object = {address:$scope.address,mobile:$scope.mobile,
-    comment:$scope.comment,created_by:user_uri,modified_by:user_uri};
-    patch_object=JSON.stringify({order:order_object});
+        //order objnect
+        order_object = {address:$scope.address,mobile:$scope.mobile,
+        comment:$scope.comment,created_by:user_uri,modified_by:user_uri};
+        patch_object=JSON.stringify({order:order_object});
 
-    //update list to add order
-    Restangular.all('orderlist/'+$stateParams.id+'/').patch(patch_object).then(function(){
-      //dismiss modal
-      $scope.dismiss();
-      //transition to confirmation
-      $state.transitionTo('lists.confirmation',{
-        reload:true
-      })
-    })//orderlist promise ends here
+        //update list to add order
+        Restangular.all('orderlist/'+$stateParams.id+'/').patch(patch_object).then(function(){
+          //dismiss modal
+          $scope.$dismiss('saved');
+          //transition to confirmation
+          $state.transitionTo('lists.confirmation',{
+            reload:true
+          })
+        })//orderlist promise ends here
+      })//user promise ends here
 
+    }else if(!isValid){
+      alert("Be sure to fill in the necessary fields")
 
-  })//user promise ends here
-
-
+    }
 
   }
   //on canceling moda
   $scope.dismiss=function(){
-    $scope.$dismiss();
+    $scope.$dismiss(saved);
   }
 
 }])
@@ -200,7 +202,7 @@ function($scope,$stateparams,$state,Restangular){
                             // error!
                             alert("jeeze something went wrong");
                         })
-    }else if(!isvalid){
+    }else if(!isValid){
       alert("Be sure to provide a List Title and Scheduled Time");
     }
   }
