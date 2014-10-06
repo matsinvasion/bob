@@ -110,8 +110,17 @@ app.controller('assigntask',['$scope','Restangular','$state','$stateParams',func
 
   }
   //on canceling moda
-  $scope.dismiss=function(){
-    $scope.$dismiss(saved);
+  $scope.dismiss = function(){
+    $scope.$dismiss('dismmised')
+    //will redirect to the home list
+    $state.transitionTo('lists.list',$stateparams,{
+      //force transition default:false
+      reload:true,
+      //broadcast $stateChangeStart and $stateChangesuccess event default:false
+      notify:true,
+      //inherit url paramtere from current url
+      inherit:false
+    })
   }
 
 }])
@@ -233,7 +242,13 @@ app.config(['$stateProvider',function($stateProvider){
       //this template has a ui-view that gets populated by child template
       templateUrl:'/static/partials/list.html'
     })
+    .state('lists.home',{
+      //home,
+      url:'lists',
+      templateUrl:'/static/partials/item.html',
+    })
     .state('lists.list',{
+      //this state represents a single list
       //match a listID of 1 to 8 characters
       //url becomes /lists/list/id
       url:'list/{id:[0-9]{1,8}}',
@@ -317,6 +332,7 @@ app.config(['$stateProvider',function($stateProvider){
       }]
     })
    .state('lists.createlist',{
+     //here we create a new list
       url:'new', //new list
       onEnter:['$stateParams','$state','$modal',function($stateParams,$state,$modal){
         $modal.open({
@@ -333,6 +349,7 @@ app.config(['$stateProvider',function($stateProvider){
 
     })
     .state('edit',{
+      //in this state we edit a given lists
       url:'/list/{id:[0-9]{1,8}}/edit',
       //controller: listResourceController.listCtrl,
       //templateUrl:'/static/partials/editlist.html',
@@ -375,11 +392,15 @@ app.config(['$stateProvider',function($stateProvider){
         })
       }]
     })
-    .state("assigntask",{
-      url :'/list/{id:[0-9]{1,8}}/assigntask',//listid/assigntask
+    .state("lists.assigntask",{
+      //submit a list to dobby
+      url :'list/{id:[0-9]{1,8}}/assigntask',//listid/assigntask
       onEnter:['Restangular','$stateParams','$state','$modal',function(Restangular,$stateParams,$state,$modal){
         $modal.open({
           templateUrl:'/static/partials/assigntask.html',
+          keyboard:false,
+          backdrop:'static',
+
         /**  controller:**/
 
         })//modal functionality ends here
@@ -387,12 +408,15 @@ app.config(['$stateProvider',function($stateProvider){
 
     })//end of this state
     .state('lists.confirmation',{
+      //confirm recieving of a list
       url:'orderconfirmation',
       templateUrl:'/static/partials/confirmation.html'
     })//end of confirmation state
   //  .state()
   }]);
 app.config(['$urlRouterProvider',function($urlRouterProvider){
+  $urlRouterProvider.when("/","lists")
   $urlRouterProvider.otherwise("/");
+
 
 }]);
