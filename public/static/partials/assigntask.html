@@ -2,15 +2,16 @@
     <h3 class="modal-title">Contact Information</h3>
   </div>
   <div class="modal-dialog">
-  <form name="assignTaskForm" ng-controller="assigntask">
-    <input type="text" ng-model="address" placeholder="Where may we find you.">[[state]][[mobile]]
+  <form name="assignTaskForm" ng-controller="assigntask" novalidate>
+    <input type="text" ng-model="address" placeholder="Where may we find you." required>[[state]][[mobile]]
     <br>
-    <input type="text" ng-model="mobile" placeholder="Number we can reach you.">
+    <input type="text" ng-model="mobile" placeholder="Number we can reach you." required >
     <br>
     <textarea ng-model="comment" ></textarea>
 
 
-    <input type="submit" ng-click="assign()" value="create">
+    <input type="submit" ng-click="assign(assignTaskForm.$valid)" value="create">
+    <button class="btn btn-danger" ng-click="dismiss()">dismiss</button>
   </form>
-  <button class="btn btn-danger" ng-click="dismiss()">dismiss</button>
+
 </div>
