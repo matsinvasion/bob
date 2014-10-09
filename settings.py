@@ -145,7 +145,7 @@ INSTALLED_APPS = (
     'orders',
 #    'customers',
     'crispy_forms',
-#    'widget_tweaks',
+   'widget_tweaks',
     'tastypie',
  #   'registration',
     'smartmin',
@@ -171,7 +171,13 @@ GROUP_PERMISSIONS={
   'items.item.*'),
 }
 
-
+CACHE = {
+    'default':{
+    'BACKEND':'django.core.cache.backends.memcached.MemcachedCache',
+    'LOCATION':'127.0.0.1:11211',
+    
+    }
+}
 
 #Email sending backend
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
