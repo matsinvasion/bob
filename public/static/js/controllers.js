@@ -36,6 +36,7 @@ listResourceController.controller('listCtrl',['$scope','utils','$stateParams','R
     //Restangular objects are self aware and can make know how to make their own requests
     //$object enables use these lists in template
 
+
     orderList_object = Restangular.all('orderlist/?user__username='+$scope.user_name+'&format=json&is_active=true');
     $scope.lists = orderList_object.getList().$object;
 
@@ -43,9 +44,61 @@ listResourceController.controller('listCtrl',['$scope','utils','$stateParams','R
     $scope.num_of_lists = function(){
       return $scope.lists.length;
     }
-
+    //current list
     $scope.current_list=utils.getList($scope.lists,$stateParams.id);
     });
+
+  //dismiss create list form | modal
+  $scope.dismiss = function(){
+    $scope.$dismiss('dismmised')
+    //will redirect to the home list
+    $state.transitionTo('lists.list',$stateparams,{
+      //force transition default:false
+      reload:true,
+      //broadcast $stateChangeStart and $stateChangesuccess event default:false
+      notify:true,
+      //inherit url paramtere from current url
+      inherit:false
+    })
+  }//dismiss() ends here
+
+  //create list
+  $scope.listobject = {};
+  $scope.createlist=function(isValid,list_array){
+    if(isValid){
+      //object expected by resource
+      $scope.listobject = {title:$scope.list_name,scheduled_time:$scope.scheduledTime,created_by:$scope.user,modified_by:$scope.user,user:$scope.user};
+      $scope.submitted = true;
+      //this is not safe for now
+      //we should be binding to the view after sucessful data base creatiown
+      list_array.unshift({title:$scope.list_name,scheduled_time:$scope.scheduledTime,
+        created_by:$scope.user,modified_by:$scope.user,user:$scope.user});
+
+      createListResource($scope,Restangular).then(
+                        function(list) {
+                            // success!
+                            //initialize list name field
+                            $scope.list_name = '';
+                            params={id:list.id}
+                            //transition to list/thislist.id
+                            $scope.$dismiss('saved');
+                            $state.transitionTo("lists.list",params,{
+                              //force transition default:false
+                              reload:true,
+                              //broadcast $stateChangeStart and $stateChangesuccess event default:false
+                              notify:true,
+                              //inherit url paramtere from current url
+                              inherit:false
+                            })
+                        },
+                        function (){
+                            // error!
+                            alert("jeeze something went wrong");
+                        })
+    }else if(!isValid){
+      alert("Be sure to provide a List Title and Scheduled Time");
+    }
+  }//createlist()ends here
   //delete a list from user view
   //make is_active=false in database instead of complete removal
   //use Array.Splice to remove a particular item from array
