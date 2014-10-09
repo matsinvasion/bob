@@ -1,4 +1,19 @@
 {% extends "public_base.html"%}
 {% block order-content%}
- <p>Hooray, your account is activated. Welcome to the FreshList community.</p>
-{% endblock%}
+<style>
+  .centred{
+    position:fixed;
+    top:50%;
+    left:50%;
+    transform: translate(-50%, -50%);
+  }
+  .centred.reg{
+    text-align:center;
+  }
+</style>
+  <div class="centred">
+    <p style="padding-left:-12px;color:#fff;font-weight:bold;font-size:200%;">
+      Hooray, your account is activated. Welcome, got some amazing services for you.
+      </p>
+  </div>
+{% endblock %}

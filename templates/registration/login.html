@@ -2,12 +2,45 @@
 {% load i18n %}
 
 {% block order-content %}
-<form method="post" action=".">
-{% csrf_token %}
-{{ form.as_p }}
-<input type="submit" value="Log in" />
-<input type="hidden" name="next" value="{{ next }}" />
-</form>
-<p>{% trans "Forgot password" %}? <a href="{% url 'auth_password_reset' %}">{% trans "Reset it" %}</a>!</p>
-<p>{% trans "Not member" %}? <a href="{% url 'registration_register' %}">{% trans "Register" %}</a>!</p>
+{% load widget_tweaks%}
+<style>
+  .auth-form{margin:60px auto;width:400px;}
+  .auth-form-header{position:relative;padding:0px 20px;margin:0;color:#fff;
+    text-shadow:0 -1px 0 rgba(0,0,0,0.3);background-color:#829aa8;
+    border:1px solid #768995;
+    border-radius:3px 3px 0 0
+}
+.auth-form-body{padding:20px;font-size:14px;background-color:#fff;
+  border:1px solid #d8dee2;border-top:0;border-radius:0 0 3px 3px}
+  .auth-form-body .input-block {
+    margin-bottom: 15px;
+    margin-top: 5px;
+    width:100%;
+    height:30px;
+}
+
+</style>
+<div class="container">
+ <div class="auth-form">
+   <div  class="auth-form-header">
+     <h5 style="font-weight:bold;"> Sign In</h5>
+   </div>
+   <div class="auth-form-body">
+     <form method="post" action=".">
+     {% csrf_token %}
+     {% render_field form.username placeholder="Username" class+="input-block" %}
+     {{form.username.errors}}
+     <br />
+     {% render_field form.password placeholder="Password" class+="input-block"%}
+     {{form.password.errors}}
+     <br />
+     <input type="submit" class="btn btn-success btn-lng btn-block"value="Sign in" />
+     <input type="hidden" name="next" value="{{ next }}" />
+     </form>
+     <p><a href="{% url 'auth_password_reset' %}">{% trans "ForgotPassword?" %}</a></p>
+     <p>{% trans "Not member" %}? <a href="{% url 'registration_register' %}">{% trans "Register" %}</a>!</p>
+
+   </div>
+ </div>
+</div>
 {% endblock %}
