@@ -153,6 +153,30 @@ app.controller('edit',['$scope','$state','$stateParams','Restangular',function($
       alert("Be sure to provide list title and scheduled time");
     }
   }//end of editList()
+  //delete a list from user view
+  //make is_active=false in database instead of complete removal
+  //use Array.Splice to remove a particular item from array
+  //also ng-repeate gives us access to special $index property
+  //which is current index of array passed in
+  $scope.delete = function(id){
+    //list to delete
+  //  var list_to_delete = $scope.lists[idx];
+    //update to make on data
+    var inactivate = {is_active:false}
+    var patch_update_data = JSON.stringify(inactivate)
+    //update list
+    Restangular.all('orderlist/'+id+'/').patch(patch_update_data)
+    .then(function(){
+      //success
+      //remove list from view
+
+      $scope.lists.splice(idx,1);
+
+    }),function(){
+      //error
+      alert("Jeez that didn't go well.Give us a moment to fix it.")
+    }
+  }//end of delete
 }])
 
 app.controller('createlist',['$scope','$stateParams','$state','Restangular',
@@ -181,17 +205,15 @@ function($scope,$stateparams,$state,Restangular){
       //inherit url paramtere from current url
       inherit:false
     })
-  }
+  }//dismiss() ends here
   $scope.listobject = {};
   $scope.createlist=function(isValid){
     if(isValid){
       //object expected by resource
       $scope.listobject = {title:$scope.list_name,scheduled_time:$scope.scheduledTime,created_by:$scope.user,modified_by:$scope.user,user:$scope.user};
       $scope.submitted = true;
-
       createListResource($scope,Restangular).then(
                         function(list) {
-
                             // success!
                             //initialize list name field
                             $scope.list_name = '';
@@ -214,7 +236,7 @@ function($scope,$stateparams,$state,Restangular){
     }else if(!isValid){
       alert("Be sure to provide a List Title and Scheduled Time");
     }
-  }
+  }//createlist()ends here
 
 }]).directive('datetimepicker',function(){
   return {
@@ -277,10 +299,14 @@ app.config(['$stateProvider',function($stateProvider){
 
           // create(POST) item and add it to target list
           $scope.order_items = [];
-          $scope.addItem = function(isValid){
+          $scope.addItem = function(isValid,list_item){
             if(isValid){
 
-              //build our order item with required units
+              //populate view with new items
+              list_item.unshift({item_description:$scope.item_description,note:$scope.note,
+                created_by:user,modified_by:user,item_stamp:$scope.random_number,
+                orderlist:$scope.list.resource_uri})
+              //create new items
               $scope.order_items.unshift({item_description:$scope.item_description,note:$scope.note,
                 created_by:user,modified_by:user,item_stamp:$scope.random_number,
                 orderlist:$scope.list.resource_uri});
@@ -302,9 +328,9 @@ app.config(['$stateProvider',function($stateProvider){
             $scope.note = '';
             $state.transitionTo("lists.list",$stateParams,{
               //force transition default:false
-              reload:true,
+              reload:false,
               //broadcast $stateChangeStart and $stateChangesuccess event default:false
-              notify:true,
+              notify:false,
               //inherit url paramtere from current url
               inherit:false
             })
@@ -341,7 +367,7 @@ app.config(['$stateProvider',function($stateProvider){
           keyboard:false,
           backdrop:'static',
           //provide some logic
-         controller: 'createlist'
+        // controller: 'createlist'
 
         })
 
