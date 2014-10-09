@@ -2,7 +2,7 @@
     <h3 class="modal-title">Create List</h3>
   </div>
   <div class="modal-dialog">
-  <form name="createlistForm" ng-controller="createlist">
+  <form name="createlistForm" ng-controller="listCtrl">
     <input type="text" name="listTitle" ng-model="list_name" placeholder="List title" required>
     [[createlistForm.listTitle.$valid]][[list_name]]
 
@@ -11,7 +11,7 @@
       <span class="input-group" style="width:0">
       </span></span>
     </div>
-
+    [[lists]]
     <input type="submit" ng-click="createlist(createlistForm.$valid)" value="create">
   </form>
   <button class="btn btn-danger" ng-click="dismiss()">dismiss</button>
