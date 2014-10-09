@@ -16,6 +16,7 @@ from django.db import models
 from registration.models import RegistrationProfile
 from registration import signals
 from django.contrib.sites.models import Site, RequestSite
+from tastypie.cache import SimpleCache
 
 
 
@@ -33,6 +34,7 @@ class UserResource(ModelResource):
               'username':ALL,
               'id':ALL,
     }
+    cache = SimpleCache(timeout=10);
 
 
   #django-registration does the registering | consistency
@@ -90,9 +92,10 @@ class OrderResource(ModelResource):
     resource_name = 'order'
     authorization =Authorization()
     always_return_data = True
+    cache=SimpleCache(timeout=10)
     #we can do some filtering on this resource
 
-  
+
 
 
 
@@ -114,6 +117,7 @@ class OrderListResource(ModelResource):
               'is_active':ALL,
     }
     limit =0
+    cache=SimpleCache(timeout=10)
 
   #avail a created list to session
   #operations after this assume
@@ -136,6 +140,7 @@ class ItemResource(ModelResource):
     resource_name = 'list_item'
     authorization = Authorization()
     always_return_data = True
+    cache=SimpleCache(timeout=10)
 
   def dehydrate(self,bundle):
     bundle.request.session["item_stamp"] = bundle.data["item_stamp"]
