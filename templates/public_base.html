@@ -5,6 +5,7 @@
   <title>{% block title %}dobbys | Have it easy{% endblock %}</title>
   {% block styles %}
   <link rel="icon" href="{{ STATIC_URL }}img/new_fav.png" type="img/png">
+  <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}freshcss/open-iconic-bootstrap.min.css">
   <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}freshcss/bootstrap.min.css">
   <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}freshcss/xeditable.css">
   <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}freshcss/bootstrap-datetimepicker.min.css">
@@ -18,9 +19,9 @@
 
 <script type="text/javascript" src="{{ STATIC_URL }}lib/angular/angular.js"></script>
  </head>
- <body>
+ <body style="background-image:url(/static/partials/04.jpg)">
 
- <nav class="navbar navbar-default" style="margin-bottom: 0p; background:#87D630;">
+ <!--<nav class="navbar navbar-default" style="margin-bottom: 0p; background:#87D630;">
  <div id="logo" style="padding-left: 25px;padding-top: 10px;">
   <h2 style="color:white;">dobbys</h2>
 </div>
@@ -30,10 +31,11 @@
 
    <div class="collapse navbar-collapse navbar-responsive-ex1-collapse">
     <ul class="nav navbar-nav pull-right" style="margin-right: 53px;">
+
     </ul>
-   </div><!--end .nav-->
- </div><!--end #header-->
-</nav>
+   </div>
+ </div>
+</nav>-->
  <div style="clear: both;"></div>
 
   {% block order-content %}
@@ -66,7 +68,10 @@
   <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/restangular/1.3.1/restangular.min.js"></script>
   <script type="text/javascript">
 
+
   </script>
+
+
 
  </body>
 </html>
