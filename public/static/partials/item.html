@@ -1,24 +1,42 @@
 <!--item functionality for a given list goes here-->
-</p>item functionality goes here.</p>
+<style>
+::-webkit-input-placeholder { /* WebKit browsers */
+    color:    #35486e;
+}
+:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+   color:    #35486e;
+   opacity:  1;
+}
+::-moz-placeholder { /* Mozilla Firefox 19+ */
+   color:    #35486e;
+   opacity:  1;
+}
+:-ms-input-placeholder { /* Internet Explorer 10+ */
+   color:    #35486e;
+}
+</style>
 
 <div>
-  <h2 style="color:#35486e">Add items.</h2>
-   <form name="freshlist_itemForm" novalidate>
-     <input type="text" ng-model="item_description" placeholder="Add item" required/>
-     <br>
-     <input type="text" ng-model="note" placeholder="Add note for this item.">
+   <form name="freshlist_itemForm" ng-submit="addItem(freshlist_itemForm.$valid,list.item)"novalidate>
+     <input type="text" class="form-control"ng-model="item_description" placeholder="Add item"
+     style="opacity:0.5;margin:14px; 0;"required/>
+     <!--<span><input type="button" type="submit" ng-click="addItem(freshlist_itemForm.$valid)" novalidate value="Add"></span>-->
+     <!--add note input here -->
 
-     <span><input type="button" type="submit" ng-click="addItem(freshlist_itemForm.$valid)" novalidate value="Add"></span>
      <!--no validate prevents HTML5 validation since we provide our
        own validation-->
    </form>
 
 </div>
 <!-- items already in lists-->
-<li ng-repeat="item in list.item | orderBy:'-created_on'">
-  <a ng-click="deleteFromList($index,list)">delete</a>
-  <p>[[item.item_description + item.id]]</p>
-</li>
+<ul ng-repeat="item in list.item | orderBy:'-created_on'">
+    <li class="list-unstyled" style="color:#ffffff;font-weight:bold">
+      <span class="glyphicon glyphicon-remove-circle" ng-click="deleteFromList($index,list)"></span>
+      [[item.item_description + item.id]]
+    </li>
+
+
+</ul>
 <div>
 <button class="btn btn-success" ui-sref="lists.assigntask({id:list.id})">assign to dobby now.</button>
 </div>
