@@ -123,7 +123,7 @@ TEMPLATE_DIRS = (
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
 #registration configuration with django-registration
 ACCOUNT_ACTIVATION_DAYS = 7
-LOGIN_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = '/inbox/'
 LOGOUT_REDIRECT_URL = '/'
 
 
@@ -175,7 +175,7 @@ CACHE = {
     'default':{
     'BACKEND':'django.core.cache.backends.memcached.MemcachedCache',
     'LOCATION':'127.0.0.1:11211',
-    
+
     }
 }
 
