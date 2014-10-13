@@ -1,9 +1,35 @@
+<style>
+.input-block {
+  margin-bottom: 15px;
+  margin-top: 5px;
+  width:369px;
+  height:35px;
+}
+</style>
 <div class="modal-header">
   <h3 class="modal-title">Edit List</h3>
 </div>
 <div class="modal-dialog">
+  <form name="editlistForm" ng-controller="edit">
+    <input type="text" ng-model="new_name" class="input-block" placeholder="New List Title.">
+
+    <div class="input-group date">
+      <input type="text" datetimepicker ng-model="scheduledTime" placeholder="Change due date and time"style="width:369px;height:35px;">
+      <span class="input-group" style="width:0">
+      </span></span>
+    </div>
+    <div style="padding-top:70px;">
+  </div>
+<div class="modal-footer"style="padding-bottom:0px;">
+<a style="float:left;cursor:pointer;"ng-click="deletelist(list.id,list)"><span class="oi oi-trash" style="color:#a3a3a2;font-size:30px; font-weight:normal;">
+</span></a>
+<button class="btn btn-primary" type="submit" ng-click="editList(list.id,editlistForm.$valid)">Done</button>
+</div>
+
+</form>
+<!--
 <form  name="editlistForm" ng-controller="edit">
-  <input ng-model="new_name" required/>
+  <input ng-model="new_name">
   <div class="input-group date">
     <input type="text" datetimepicker ng-model="scheduledTime" class="form-control" required>
     <span class="input-group" style="width:0">
@@ -13,6 +39,6 @@
   <input type="submit" ng-click="editList(list.id,editlistForm.$valid)" value="done">
   <input type="submit" ng-clik="delete(list.id)" value="remove list">
 </form>
-<!--shouldn't have this button below-->
-<button class="btn btn-danger" ng-click="dismiss()">cancel</button>
+<!--shouldn't have this button below
+<button class="btn btn-danger" ng-click="dismiss()">cancel</button>-->
 </div>

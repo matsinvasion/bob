@@ -1,3 +1,5 @@
+<script src="/static/lib/jquery-1.7.2.js"></script>
+<script src="/static/js/script.js"></script>
 <style>
   a:hover,.oi .oi-pencil{
 
@@ -6,9 +8,12 @@
 <div class="container-fluid">
 <div class="row">
 <div id="lists"class="col-md-4" style="background-color:#ffffff;width:270px;">
-<div style="margin-left:40px;"ng-controller="listCtrl">
-  <p style="color:#35486e">[[user_name]]<span style="padding-left:10px;">
-    <a href="accounts/logout/"style="color:#35486e">logout</a> </span></p> <!-- add list creation here -->
+<div style="margin-left:40px;text-transform:capitalize;"ng-controller="listCtrl">
+  <p style="color:#1c1c1c">[[user_name]]<span style="padding-left:10px;">
+  <a href="/accounts/logout/"style="color:#1c1c1c">logout</a></span>
+  <a ui-sref="lists.createlist"><span class="oi oi-plus"style="margin-top:3px;float:right;font-size:20px;color:#a3a3a2"></span>
+  </p> <!-- add list creation here -->
+
    <ul ng-repeat="list in lists" class="list-unstyled">
 
      <li >
@@ -17,7 +22,7 @@
         style="font-family:Lato,Helvetica Nue,Arial,Sans-serif;font-size:15px;color:#1c1c1c;padding-left:6px;font-weight:400;">
         [[list.title+list.id]]</a></span>
        <span style="float:right">
-         <a ui-sref="edit({id:list.id})"><span class="oi oi-pencil" style="color:#a3a3a2;font-size:15px; font-weight:normal;">
+         <a ui-sref="lists.edit({id:list.id})"><span class="oi oi-pencil" style="color:#a3a3a2;font-size:15px; font-weight:normal;">
        </span></a></span></li>
 
    </li>
@@ -25,7 +30,7 @@
    <p> number of lists [[num_of_lists()]]</p>
 </div>
 <div>
-<button class="btn btn-success" ui-sref="lists.createlist">create list</button>
+
 
 </div>
 </div>
@@ -34,3 +39,7 @@
 </div>
 </div>
 </div>
+
+
+
+</script>

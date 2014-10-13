@@ -1,13 +1,14 @@
 //declare app level module that depends on services,controllers
 //register e on module loading alternative symbols for our django environment
-app = angular.module('GroceryList',['restangular','xeditable','ui.bootstrap','ui.router','itemResourceController','listResourceController']).
+app = angular.module('GroceryList',['restangular','xeditable','ui.router',
+'itemResourceController']).
   config(function($interpolateProvider,$httpProvider,RestangularProvider){
     $httpProvider.defaults.xsrfCookieName= 'csrftoken';
     $httpProvider.defaults.xsrfHeaderName='X-CSRFToken';
     $interpolateProvider.startSymbol('[[');
     $interpolateProvider.endSymbol(']]');
     //base url for our api calls
-    RestangularProvider.setBaseUrl('api/v1');
+    RestangularProvider.setBaseUrl('/api/v1');
     //response on call
     //extract array from response incase of getList()
     RestangularProvider.addResponseInterceptor(function(data,operation,what,url,response,defeered){
@@ -97,7 +98,7 @@ app.controller('assigntask',['$scope','Restangular','$state','$stateParams',func
           //dismiss modal
           $scope.$dismiss('saved');
           //transition to confirmation
-          $state.transitionTo('lists.confirmation',{
+          $state.transitionTo('lists.confirmation',null,{
             reload:true
           })
         })//orderlist promise ends here
@@ -178,7 +179,127 @@ app.controller('edit',['$scope','$state','$stateParams','Restangular',function($
     }
   }//end of delete
 }])
+//list  controller
 
+app.controller('listCtrl',['$scope','$document','$state','utils','$stateParams',
+'Restangular','$q',function($scope,$document,$state,utils,
+  $stateParams,Restangular){
+    //set list col height
+  var lists_col = $document[0].getElementById('lists');
+  if (lists_col){lists_col.style.minHeight=window.innerHeight+'px'};
+  //avail our scope in browser console
+  window.listResource_SCOPE = $scope;
+
+
+  //GET current user
+  //this is prbably wrong
+  console.log(Restangular.all('user'))
+  user_object = Restangular.all('user').getList().then(function(users){
+
+    $scope.user=users[0].resource_uri;
+    $scope.user_name=users[0].username;
+    //GET lists created by the user
+    //Restangular objects are self aware and can make know how to make their own requests
+    //$object enables use these lists in template
+
+
+    orderList_object = Restangular.all('orderlist/?user__username='+$scope.user_name+'&format=json&is_active=true');
+    $scope.lists = orderList_object.getList().$object;
+    //how many lists does user own
+    $scope.num_of_lists = function(){
+      return $scope.lists.length;
+    }
+    //current list
+    $scope.current_list=utils.getList($scope.lists,$stateParams.id);
+    });
+
+  //dismiss create list form | modal
+  $scope.dismiss = function(){
+    $scope.$dismiss('dismmised')
+    //will redirect to the home list
+    $state.transitionTo('lists.list',null,{
+      //force transition default:false
+      reload:false,
+      //broadcast $stateChangeStart and $stateChangesuccess event default:false
+      notify:false,
+      //inherit url paramtere from current url
+      inherit:false
+    })
+  }//dismiss() ends here
+
+  //create list
+  $scope.listobject = {};
+  $scope.createlist=function(isValid,list_array){
+    if(isValid){
+      //object expected by resource
+      $scope.listobject = {title:$scope.list_name,scheduled_time:$scope.scheduledTime,created_by:$scope.user,modified_by:$scope.user,user:$scope.user};
+      $scope.submitted = true;
+      createListResource($scope,Restangular).then(
+                        function(list) {
+                            // success!
+                            //initialize list name field
+                            $scope.list_name = '';
+                            $scope.lists.unshift(list)
+                            params={id:list.id}
+                            //transition to list/thislist.id
+                            $scope.$dismiss('saved');
+                            $state.transitionTo("lists.list",params,{
+                              //force transition default:false
+                              reload:true,
+                              //broadcast $stateChangeStart and $stateChangesuccess event default:false
+                              notify:true,
+                              //inherit url paramtere from current url
+                              inherit:false
+                            })
+                        },
+                        function (){
+                            // error!
+                            alert("jeeze something went wrong");
+                        })
+    }else if(!isValid){
+      alert("Be sure to provide a List Title and Scheduled Time");
+    }
+  }//createlist()ends here
+  //delete a list from user view
+  //make is_active=false in database instead of complete removal
+  //use Array.Splice to remove a particular item from array
+  //also ng-repeate gives us access to special $index property
+  //which is current index of array passed in
+  $scope.delete = function(idx){
+    //list to delete
+    var list_to_delete = $scope.lists[idx];
+    //update to make on data
+    var inactivate = {is_active:false}
+    var patch_update_data = JSON.stringify(inactivate)
+    //update list
+    Restangular.all('orderlist/'+list_to_delete.id+'/').patch(patch_update_data)
+    .then(function(){
+      //success
+      //remove list from view
+      $scope.lists.splice(idx,1);
+
+    }),function(){
+      //error
+      alert("Jeez that didn't go well.Give us a moment to fix it.")
+    }
+  }
+}]).directive('datetimepicker',function(){
+  return {
+    require: "?ngModel",
+    restrict: "AE",
+    link: function(scope,elm,attr,ngModel){
+      $(elm).datetimepicker({});
+      $(elm).on('blur',function(value){
+        //set scheduledTime model value
+        scope.$apply(function(){ngModel.$setViewValue($(elm).datetimepicker().val());
+        });
+      });
+    }
+  };
+});
+
+
+//
 app.controller('createlist',['$scope','$stateParams','$state','Restangular',
 function($scope,$stateparams,$state,Restangular){
 
@@ -234,6 +355,7 @@ function($scope,$stateparams,$state,Restangular){
                             alert("jeeze something went wrong");
                         })
     }else if(!isValid){
+      console.log(isValid)
       alert("Be sure to provide a List Title and Scheduled Time");
     }
   }//createlist()ends here
@@ -366,17 +488,18 @@ app.config(['$stateProvider',function($stateProvider){
           templateUrl:'/static/partials/createlist.html',
           keyboard:false,
           backdrop:'static',
+          size:'lg',
           //provide some logic
-        // controller: 'createlist'
+         controller: 'listCtrl'
 
         })
 
       }]
 
     })
-    .state('edit',{
+    .state('lists.edit',{
       //in this state we edit a given lists
-      url:'/list/{id:[0-9]{1,8}}/edit',
+      url:'list/{id:[0-9]{1,8}}/edit',
       //controller: listResourceController.listCtrl,
       //templateUrl:'/static/partials/editlist.html',
       onEnter:['$stateParams','$state','$modal',function($stateParams,$state,$modal){
@@ -402,13 +525,38 @@ app.config(['$stateProvider',function($stateProvider){
               $scope.list=utils.getList(lists,$stateParams.id);
               $scope.lists = lists
             })
-            $scope.dismiss = function(){
+            $scope.deletelist=function(id,list){
+              removed_list_idx = $scope.lists.indexOf(list);
+
+              $scope.lists.splice(removed_list_idx,1);
+              console.log($scope.lists);
+              patch_data = JSON.stringify({is_active:false})
+              Restangular.all('orderlist/'+id+'/').patch(patch_data).then(function(list){
+                //success
+                //should transition to next list
+                //but how do we achieve that
+                $scope.$dismiss("closed");
+                $state.transitionTo("lists.list",null,{
+                  reload:true,
+                  notify:true,
+                  inherit:false
+                })//end of state transition
+                ,function(){
+                  //error
+                  alert("Something didn't go right,please try again.")
+                }
+
+              })//end of promise
+            }//end of deletelist()
+            $scope.dismiss = function(i){
             //remove modal, something cameup
              $scope.$dismiss('clicked');
              //transition back to parent state
-             return $state.transitionTo("lists.list",$stateParams,{
+             return $state.transitionTo("lists.list",null,{
                //show list in view
-               reload:true
+               reload:false,
+               notify:false,
+               inherit:false,
              });
           }
           }
