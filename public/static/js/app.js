@@ -436,10 +436,14 @@ app.config(['$stateProvider',function($stateProvider){
 
               //create item
               //returns a promise, reload the state
-            create_item =  create_itemresource($scope,Restangular).then(function(){
-                console.log("successful creation and state is "+ $state.current.name)
+            $scope.created_item =  create_itemresource($scope,Restangular).then(function(item){
+              //$scope.created_item_id=item;
+              //console.log($scope.created_item_id.objects[0].item_description)
+              list_item[0].id=item.objects[0].id
+              ///console.log(list_item[0])
 
               });
+              //console.log("created item id is "+$scope.created_item_id)
 
             }else if(!isValid){
               alert("Seems, you didn't provide a list item.")
@@ -461,19 +465,34 @@ app.config(['$stateProvider',function($stateProvider){
 
 
           //remove item from list
-          $scope.deleteFromList=function(idx,list){
-            var current_item = list.item[idx];
+          $scope.deleteFromList=function(item){
+            //var current_item = list.item[idx];
             //update to make on data
             var inactivate = {is_active:false}
             var patch_update_data = JSON.stringify(inactivate)
-            //update item
-            Restangular.all('list_item/'+current_item.id+'/').patch(patch_update_data).then(function(){
-              //success
-              //get index of list
-              //var list_index=$scope.lists.indexOf(list);
-              //remove item from view
-              $scope.list.item.splice(idx,1);
-            })
+            if(item.id){
+              $scope.list.item.splice($scope.list.item.indexOf(item),1);
+              //inactivate item in database
+              //update item
+              Restangular.all('list_item/'+item.id+'/').patch(patch_update_data).then(function(){
+                //success
+                //get index of list
+                //var list_index=$scope.lists.indexOf(list);
+                //remove item from view
+
+              })
+
+
+            }else{
+              console.log("am here")
+              //get item at idx
+              item_removed = $scope.list.item[idx];
+              item_removed.is_active = false;
+
+              $scope.list.item.splice(item_removed,1);
+
+
+            }
           }
         }
         )
@@ -529,7 +548,6 @@ app.config(['$stateProvider',function($stateProvider){
               removed_list_idx = $scope.lists.indexOf(list);
 
               $scope.lists.splice(removed_list_idx,1);
-              console.log($scope.lists);
               patch_data = JSON.stringify({is_active:false})
               Restangular.all('orderlist/'+id+'/').patch(patch_data).then(function(list){
                 //success
