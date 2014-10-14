@@ -16,7 +16,7 @@
 }
 </style>
 
-<div>
+<div ng-if="list">
   <div ng-show="list.item.length>0" style="float:right; margin-top:0px;">
     <button class="btn btn-success" ui-sref="lists.assigntask({id:list.id})">assign to dobby now.</button>
 
@@ -34,15 +34,20 @@
        own validation-->
    </form>
 
+   <!-- items already in lists-->
+   <ul ng-repeat="item in list.item | orderBy:'-created_on'">
+
+
+       <li class="list-unstyled" style="color:#ffffff;font-weight:bold">
+         <span class="glyphicon glyphicon-remove-circle" ng-click="deleteFromList(item)" style="cursor:pointer"></span>
+         [[item.item_description + item.id]]
+       </li>
+
+
+   </ul>
+
+
 </div>
-<!-- items already in lists-->
-<ul ng-repeat="item in list.item | orderBy:'-created_on'">
-
-
-    <li class="list-unstyled" style="color:#ffffff;font-weight:bold">
-      <span class="glyphicon glyphicon-remove-circle" ng-click="deleteFromList(item)" style="cursor:pointer"></span>
-      [[item.item_description + item.id]]
-    </li>
-
-
-</ul>
+<div ng-if="!list">
+  <p>Lets make some list. Hit the + button on your left.</p>
+</div>
