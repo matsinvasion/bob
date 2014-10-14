@@ -1,6 +1,6 @@
 //declare app level module that depends on services,controllers
 //register e on module loading alternative symbols for our django environment
-app = angular.module('GroceryList',['restangular','xeditable','ui.router',
+app = angular.module('GroceryList',['restangular','xeditable','ui.router','ui.bootstrap',
 'itemResourceController']).
   config(function($interpolateProvider,$httpProvider,RestangularProvider){
     $httpProvider.defaults.xsrfCookieName= 'csrftoken';
