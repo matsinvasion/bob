@@ -151,6 +151,7 @@ class AssignmentResource(ModelResource):
   #cannot make request without them since, tastypie doesnot know them beforehand
   created_by = fields.ToOneField(UserResource,'created_by',null=True,blank=True)
   modified_by = fields.ToOneField(UserResource,'modified_by',null=True,blank=True)
+  orderlist = fields.ToOneField(OrderListResource,'orderlist',null=True,blank=True,full=True)
   class Meta:
     queryset = Assignment.objects.all()
     resource_name = 'assignments'

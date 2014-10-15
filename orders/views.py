@@ -15,7 +15,7 @@ class OrderListCRUDL(SmartCRUDL):
     fields = ('scheduled_time','title','user','order.mobile','order.address','order.comment')
 
   class Read(SmartReadView):
-    fields = ('title','user','order.address','listItems','order.mobile','order.address','order.comment')
+    fields = ('title','user','order.address','ListItems','order.mobile','order.address','order.comment')
 
     def get_listItems(self,obj):
       #make sure to return items that belong only to this user
@@ -24,3 +24,22 @@ class OrderListCRUDL(SmartCRUDL):
       for i in collection:
         items_in_list.append(i.item_description)
       return items_in_list
+
+class AssignmentCRUDL(SmartCRUDL):
+  model = Assignment
+  actions = ("list",'read','update')
+  permissions = True
+
+  class List(SmartListView):
+    fields = ('date','orderlist.user','orderlist.title')
+
+  class Read(SmartReadView):
+    fields = ('date','orderlist.user.username','orderlist.title','orderlist.scheduled_time',
+    'ListItems','listItems','orderlist.order.address','orderlist.order.mobile','orderlist.order.comment')
+
+    def get_listItems(self,obj):
+      items = obj.orderlist.item_set.all()
+      assigned_items =[]
+      for item in items:
+        assigned_items.append(item.item_description.__str__())
+      return assigned_items

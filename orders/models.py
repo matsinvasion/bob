@@ -59,5 +59,5 @@ class OrderList(SmartModel):
 
 class Assignment(SmartModel):
   """Lists assigned by user"""
-  date = models.DateTimeField(auto=True,auto_now_add=True)
-  orderlist = models.Foreignkey(OrderList,null=False)
+  date = models.DateTimeField(auto_now=True,auto_now_add=True)
+  orderlist = models.ForeignKey(OrderList)

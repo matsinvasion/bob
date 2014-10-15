@@ -94,13 +94,28 @@ app.controller('assigntask',['$scope','Restangular','$state','$stateParams',func
         patch_object=JSON.stringify({order:order_object});
 
         //update list to add order
-        Restangular.all('orderlist/'+$stateParams.id+'/').patch(patch_object).then(function(){
-          //dismiss modal
-          $scope.$dismiss('saved');
-          //transition to confirmation
-          $state.transitionTo('lists.confirmation',null,{
-            reload:true
-          })
+        Restangular.all('orderlist/'+$stateParams.id+'/').patch(patch_object).then(function(list){
+          //create an instance of Assignment
+          //use returned object from server per user
+          var created_by = list.created_by;
+          var modified_by = list.modified_by;
+          //json object to create via endpoint
+          var assignment = JSON.stringify({created_by:created_by,modified_by:modified_by,
+          orderlist:list.resource_uri});
+          //make request
+          Restangular.all('assignments/').post(assignment).then(function(){
+            //success
+            //dismiss modal
+            $scope.$dismiss('saved');
+            //transition to confirmation
+            $state.transitionTo('lists.confirmation',null,{
+              reload:true
+            })
+
+          },function(){
+            //error
+            window.alert("Jeeze, something went wrong, please try again. If problem persists contact us.")
+          })//end of Assignment creations
         })//orderlist promise ends here
       })//user promise ends here
 

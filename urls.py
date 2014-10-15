@@ -14,6 +14,7 @@ v1_api.register(UserResource())
 v1_api.register(ItemResource())
 v1_api.register(OrderListResource())
 v1_api.register(OrderResource())
+v1_api.register(AssignmentResource())
 #v1_api.register(CreateUserResource())
 
 
