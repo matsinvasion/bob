@@ -7,12 +7,16 @@
 </style>
 <div class="container-fluid">
 <div class="row">
-<div id="lists"class="col-md-4" style="background-color:#ffffff;width:270px;">
-<div style="margin-left:40px;text-transform:capitalize;"ng-controller="listCtrl">
+<div id="lists"class="col-md-4" style="background-color:#ffffff;width:270px;padding-left:-10px;">
+<div style="margin-left:4px;text-transform:capitalize;"ng-controller="listCtrl">
   <p style="color:#1c1c1c">[[user_name]]<span style="padding-left:10px;">
-  <a href="/accounts/logout/"style="color:#1c1c1c">logout</a></span>
-  <a ui-sref="lists.createlist"><span class="oi oi-plus"style="margin-top:3px;float:right;font-size:20px;color:#a3a3a2"></span>
-  </p> <!-- add list creation here -->
+  <a href="/accounts/logout/"style="color:#1c1c1c;float:right;">logout</a></span>
+  </p>
+  <div style="padding-top:5px;padding-bottom:5px;">
+    <a ui-sref="lists.createlist"><span class="oi oi-plus"style="padding-left:40%;font-size:20px;color:#a3a3a2"></a></span>
+  </div>
+
+  <!-- add list creation here -->
 
    <ul ng-repeat="list in lists" class="list-unstyled">
 
@@ -20,13 +24,13 @@
       <span class="oi oi-menu" style="color:#a3a3a2;font-size:15px; font-weight:normal;">
         <a ui-sref="lists.list({id:list.id})"
         style="font-family:Lato,Helvetica Nue,Arial,Sans-serif;font-size:15px;color:#1c1c1c;padding-left:6px;font-weight:400;">
-        [[list.title+list.id]]</a></span>
+        [[list.title]]</a></span>
        <span style="float:right">
          <a ui-sref="lists.edit({id:list.id})"><span class="oi oi-pencil" style="color:#a3a3a2;font-size:15px; font-weight:normal;">
        </span></a></span></li>
 
    </li>
-   
+
  </ul>
 
 </div>
