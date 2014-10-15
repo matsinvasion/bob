@@ -1,6 +1,6 @@
 from tastypie.resources import ModelResource,ALL,ALL_WITH_RELATIONS
 from items.models import Item
-from orders.models import OrderList, Order, Assignment
+from orders.models import OrderList,Order,Assignment
 from tastypie import fields
 from tastypie.authorization import Authorization, DjangoAuthorization
 from django.contrib.auth.models import User
