@@ -18,8 +18,7 @@
 
 <div ng-if="list">
   <div ng-show="list.item.length>0" style="float:right; margin-top:0px;">
-    <button class="btn btn-success" ui-sref="lists.assigntask({id:list.id})">assign to dobby now.</button>
-
+    <button class="btn btn-success" ui-sref="lists.assigntask({id:list.id})">assign to Mark.</button>
   </div>
    <form name="freshlist_itemForm" ng-submit="addItem(freshlist_itemForm.$valid,list.item)"novalidate>
      <input type="text" class="form-control"ng-model="item_description" placeholder="Add item"
