@@ -1,6 +1,6 @@
 from tastypie.resources import ModelResource,ALL,ALL_WITH_RELATIONS
 from items.models import Item
-from orders.models import OrderList, Order
+from orders.models import OrderList, Order, Assignment
 from tastypie import fields
 from tastypie.authorization import Authorization, DjangoAuthorization
 from django.contrib.auth.models import User
@@ -129,8 +129,7 @@ class OrderListResource(ModelResource):
 
 
 class ItemResource(ModelResource):
-  #define these fields on resource,
-  #cannot make request without them since, tastypie doesnot know them beforehand
+
   orderlist = fields.ToOneField(OrderListResource,'orderlist',null=True,blank=True)
   created_by = fields.ToOneField(UserResource,'created_by',null=True,blank=True)
   modified_by = fields.ToOneField(UserResource,'modified_by',null=True,blank=True)
@@ -145,3 +144,15 @@ class ItemResource(ModelResource):
   def dehydrate(self,bundle):
     bundle.request.session["item_stamp"] = bundle.data["item_stamp"]
     return bundle
+
+
+class AssignmentResource(ModelResource):
+  #define these fields on resource,
+  #cannot make request without them since, tastypie doesnot know them beforehand
+  created_by = fields.ToOneField(UserResource,'created_by',null=True,blank=True)
+  modified_by = fields.ToOneField(UserResource,'modified_by',null=True,blank=True)
+  class Meta:
+    queryset = Assignment.objects.all()
+    resource_name = 'assignments'
+    authorization = Authorization()
+    always_return_data =True
