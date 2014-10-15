@@ -33,9 +33,16 @@ class AssignmentCRUDL(SmartCRUDL):
   class List(SmartListView):
     fields = ('date','orderlist.user','orderlist.title')
 
+    #order assignments by date created
+    def get_queryset(self,*args,**kwargs):
+      queryset = super(AssignmentCRUDL.List,self).get_queryset(*args,**kwargs)
+      #later on when we individuals to take up assignments
+      #configure that here
+      return queryset.order_by('-created_on')
+
   class Read(SmartReadView):
     fields = ('date','orderlist.user.username','orderlist.title','orderlist.scheduled_time',
-    'ListItems','listItems','orderlist.order.address','orderlist.order.mobile','orderlist.order.comment')
+    'listItems','orderlist.order.address','orderlist.order.mobile','orderlist.order.comment')
 
     def get_listItems(self,obj):
       items = obj.orderlist.item_set.all()
