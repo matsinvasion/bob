@@ -143,6 +143,7 @@ INSTALLED_APPS = (
 #    'stores',
     'items',
     'orders',
+    'registration',
 #    'customers',
     'crispy_forms',
    'widget_tweaks',
