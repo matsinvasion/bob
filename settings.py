@@ -140,7 +140,7 @@ INSTALLED_APPS = (
     'django.contrib.admindocs',
     'guardian',
     'public',
-    'stores',
+#    'stores',
     'items',
     'orders',
 #    'customers',
