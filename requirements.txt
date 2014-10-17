@@ -12,3 +12,4 @@ django_guardian
 xlutils
 python-memcached
 dj-static
+django-widget-tweaks
