@@ -11,3 +11,4 @@ django-registration-redux
 django_guardian
 xlutils
 python-memcached
+dj-static
