@@ -436,11 +436,12 @@ app.config(['$stateProvider',function($stateProvider){
 
           // create(POST) item and add it to target list
           $scope.order_items = [];
-          $scope.addItem = function(isValid,list_item){
+          $scope.addItem = function(isValid,list_items){
             if(isValid){
+            console.log("item description is "+$scope.item_description)
 
               //populate view with new items
-              list_item.unshift({item_description:$scope.item_description,note:$scope.note,
+              list_items.unshift({item_description:$scope.item_description,note:$scope.note,
                 created_by:user,modified_by:user,item_stamp:$scope.random_number,
                 orderlist:$scope.list.resource_uri})
               //create new items
@@ -452,9 +453,9 @@ app.config(['$stateProvider',function($stateProvider){
               //create item
               //returns a promise, reload the state
             $scope.created_item =  create_itemresource($scope,Restangular).then(function(item){
-              //$scope.created_item_id=item;
-              //console.log($scope.created_item_id.objects[0].item_description)
-              list_item[0].id=item.objects[0].id
+         
+              //bind unbound item to its id
+              list_items[0].id=item.objects[0].id
               ///console.log(list_item[0])
 
               });
