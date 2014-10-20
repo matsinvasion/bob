@@ -12,8 +12,9 @@
   <p style="color:#1c1c1c">[[user_name]]<span style="padding-left:10px;">
   <a href="/accounts/logout/"style="color:#1c1c1c;float:right;">logout</a></span>
   </p>
-  <div style="padding-top:5px;padding-bottom:5px;">
-    <a ui-sref="lists.createlist"><span class="oi oi-plus"style="padding-left:40%;font-size:20px;color:#a3a3a2"></a></span>
+  <div style="padding-top:5px;padding-bottom:5px; padding-left:40%;font-size:20px;color:#a3a3a2">
+    <button ui-sref="lists.createlist" class="btn btn-primary">New List</button>
+    <!--<a ui-sref="lists.createlist"><span class="glyphicon glyphicon-add-circle"style="padding-left:40%;font-size:20px;color:#a3a3a2"></a></span>-->
   </div>
 
   <!-- add list creation here -->
@@ -21,13 +22,12 @@
    <ul ng-repeat="list in lists" class="list-unstyled">
 
      <li >
-      <span class="oi oi-menu" style="color:#a3a3a2;font-size:15px; font-weight:normal;">
+      <span class="glyphicon glyphicon-tasks" style="color:#a3a3a2;font-size:15px; font-weight:normal;">
         <a ui-sref="lists.list({id:list.id})"
         style="font-family:Lato,Helvetica Nue,Arial,Sans-serif;font-size:15px;color:#1c1c1c;padding-left:6px;font-weight:400;">
         [[list.title]]</a></span>
        <span style="float:right">
-         <a ui-sref="lists.edit({id:list.id})"><span class="oi oi-pencil" style="color:#a3a3a2;font-size:15px; font-weight:normal;">
-       </span></a></span></li>
+         <a ui-sref="lists.edit({id:list.id})">Edit</a></span></li>
 
    </li>
 
