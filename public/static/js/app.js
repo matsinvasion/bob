@@ -1,6 +1,6 @@
 //declare app level module that depends on services,controllers
 //register e on module loading alternative symbols for our django environment
-app = angular.module('GroceryList',['restangular','xeditable','ui.router','ui.bootstrap',
+app = angular.module('GroceryList',['restangular','xeditable','ui.bootstrap','ui.router',
 'itemResourceController']).
   config(function($interpolateProvider,$httpProvider,RestangularProvider){
     $httpProvider.defaults.xsrfCookieName= 'csrftoken';
@@ -404,7 +404,7 @@ app.config(['$stateProvider',function($stateProvider){
     .state('lists.home',{
       //home,
       url:'lists',
-      templateUrl:'/static/partials/item.html',
+      templateUrl:'/static/partials/inbox.html',
     })
     .state('lists.list',{
       //this state represents a single list
@@ -453,7 +453,7 @@ app.config(['$stateProvider',function($stateProvider){
               //create item
               //returns a promise, reload the state
             $scope.created_item =  create_itemresource($scope,Restangular).then(function(item){
-         
+
               //bind unbound item to its id
               list_items[0].id=item.objects[0].id
               ///console.log(list_item[0])
