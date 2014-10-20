@@ -26,7 +26,7 @@
    <form name="freshlist_itemForm" novalidate>
      <input type="text" class="form-control input_boxes" ng-model="item_description" placeholder="What do you need help with?"
      required/>
-     <textarea type="text" class="form-control input_boxes" style="margin-top:0px;"
+     <textarea type="text" class="form-control input_boxes" ng-model="note"style="margin-top:0px;"
      placeholder="Add a note"
      ></textarea>
      <button class="btn btn-primary" style="margin-left:38px;" ng-click="addItem(freshlist_itemForm.$valid,list.item)">Add Item</button>
