@@ -15,11 +15,20 @@
    color:    #35486e;
 }
 </style>
-
 <div>
-   <form name="freshlist_itemForm" ng-submit="addItem(freshlist_itemForm.$valid,list.item)"novalidate>
-     <input type="text" class="form-control"ng-model="item_description" placeholder="Add item"
-     style="opacity:0.5;margin:14px; 0;"required/>
+  <div ng-show="list.item.length>0" style="float:right; margin-top:0px;">
+    <span class="glyphicon glyphicon-share">
+    <a ui-sref="lists.assigntask({id:list.id})">assign to Mark.</a>
+  </div>
+   <form name="freshlist_itemForm" novalidate>
+     <input type="text" class="form-control input_boxes" ng-model="item_description" placeholder="What do you need help with?"
+     required/>
+     <textarea type="text" class="form-control input_boxes" style="margin-top:0px;"
+     placeholder="Add a note"
+     ></textarea>
+     <button class="btn btn-primary" style="margin-left:38px;" ng-submit="addItem(freshlist_itemForm.$valid,list.item)">Add Item</button>
+
+
      <!--<span><input type="button" type="submit" ng-click="addItem(freshlist_itemForm.$valid)" novalidate value="Add"></span>-->
      <!--add note input here -->
 
@@ -27,16 +36,17 @@
        own validation-->
    </form>
 
-</div>
-<!-- items already in lists-->
-<ul ng-repeat="item in list.item | orderBy:'-created_on'">
-    <li class="list-unstyled" style="color:#ffffff;font-weight:bold">
-      <span class="glyphicon glyphicon-remove-circle" ng-click="deleteFromList($index,list)"></span>
-      [[item.item_description + item.id]]
-    </li>
+   <!-- items already in lists-->
+   <ul ng-repeat="item in list.item | orderBy:'-created_on'">
 
 
-</ul>
-<div>
-<button class="btn btn-success" ui-sref="lists.assigntask({id:list.id})">assign to dobby now.</button>
+       <li class="list-unstyled" style="color:#ffffff;font-weight:bold">
+         <span class="glyphicon glyphicon-remove-circle" ng-click="deleteFromList(item)" style="cursor:pointer"></span>
+         [[item.item_description]]
+       </li>
+
+
+   </ul>
+
+
 </div>
