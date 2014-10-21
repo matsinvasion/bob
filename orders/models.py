@@ -8,6 +8,7 @@ from decimal import Decimal
 
 
 
+
 class Order(SmartModel):
 
   """Clarifies all that makes up an order"""
@@ -54,7 +55,7 @@ class OrderList(SmartModel):
   """Collection of order items"""
   user = models.ForeignKey(User,null=True)
   order = models.ForeignKey(Order,null=True,blank=True,related_name="order_lists",help_text="when created.")
-  title=models.CharField(max_length=60,help_text="List name.")
+  title= models.CharField(max_length=60,help_text="List name.")
   scheduled_time = models.CharField(max_length=100,null=True,blank=True,help_text="When work should be done.")
 
 class Assignment(SmartModel):

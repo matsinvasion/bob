@@ -40,11 +40,33 @@ class AssignmentCRUDL(SmartCRUDL):
       #configure that here
       return queryset.order_by('-created_on')
 
-  class Read(SmartReadView):
-    fields = ('date','orderlist.user.username','orderlist.title','orderlist.scheduled_time',
-    'listItems','orderlist.order.address','orderlist.order.mobile','orderlist.order.comment')
 
-    def get_listItems(self,obj):
+  class Read(SmartReadView):
+
+    def get_context_data(self,*args,**kwargs):
+    #  import pdb;pdb.set_trace()
+      context = super(AssignmentCRUDL.Read, self).get_context_data(*args,**kwargs)
+      #Avail Lists
+      list_info = context["assignment"].orderlist
+      context["list_info"]=list_info
+
+      #Avail items as tasks
+      tasks = context["assignment"].orderlist.item_set.all()
+      context["tasks"]=tasks
+
+      #Avail order object
+      task_info = context["assignment"].orderlist.order
+      context["task_info"] = task_info
+
+      #Avail user
+      user_info = context["assignment"].orderlist.user
+      context["user_info"] = user_info
+
+      return context
+
+
+
+    def get_list_Items(self,obj):
       items = obj.orderlist.item_set.all()
       assigned_items =[]
       for item in items:
