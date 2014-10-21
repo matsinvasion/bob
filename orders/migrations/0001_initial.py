@@ -1,143 +1,77 @@
 # -*- coding: utf-8 -*-
-from south.utils import datetime_utils as datetime
-from south.db import db
-from south.v2 import SchemaMigration
-from django.db import models
+from __future__ import unicode_literals
+
+from django.db import models, migrations
+from django.conf import settings
 
 
-class Migration(SchemaMigration):
+class Migration(migrations.Migration):
 
-    def forwards(self, orm):
-        # Adding model 'Order'
-        db.create_table(u'orders_order', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('is_active', self.gf('django.db.models.fields.BooleanField')(default=True)),
-            ('created_by', self.gf('django.db.models.fields.related.ForeignKey')(related_name='order_creations', to=orm['auth.User'])),
-            ('created_on', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
-            ('modified_by', self.gf('django.db.models.fields.related.ForeignKey')(related_name='order_modifications', to=orm['auth.User'])),
-            ('modified_on', self.gf('django.db.models.fields.DateTimeField')(auto_now=True, blank=True)),
-            ('user', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'], null=True)),
-            ('location', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['customers.Location'], null=True)),
-            ('stage', self.gf('django.db.models.fields.CharField')(default='S', max_length=1)),
-            ('started_at', self.gf('django.db.models.fields.DateTimeField')(null=True)),
-            ('paid_at', self.gf('django.db.models.fields.DateTimeField')(null=True)),
-            ('confirmed_at', self.gf('django.db.models.fields.DateTimeField')(null=True)),
-            ('recruited_at', self.gf('django.db.models.fields.DateTimeField')(null=True)),
-            ('enroute_at', self.gf('django.db.models.fields.DateTimeField')(null=True)),
-            ('delivered_at', self.gf('django.db.models.fields.DateTimeField')(null=True)),
-            ('cancelled_at', self.gf('django.db.models.fields.DateTimeField')(null=True)),
-        ))
-        db.send_create_signal(u'orders', ['Order'])
+    dependencies = [
+        migrations.swappable_dependency(settings.AUTH_USER_MODEL),
+        ('items', '__first__'),
+    ]
 
-        # Adding model 'OrderList'
-        db.create_table(u'orders_orderlist', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('is_active', self.gf('django.db.models.fields.BooleanField')(default=True)),
-            ('created_by', self.gf('django.db.models.fields.related.ForeignKey')(related_name='orderlist_creations', to=orm['auth.User'])),
-            ('created_on', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
-            ('modified_by', self.gf('django.db.models.fields.related.ForeignKey')(related_name='orderlist_modifications', to=orm['auth.User'])),
-            ('modified_on', self.gf('django.db.models.fields.DateTimeField')(auto_now=True, blank=True)),
-            ('item', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['items.Item'])),
-        ))
-        db.send_create_signal(u'orders', ['OrderList'])
-
-
-    def backwards(self, orm):
-        # Deleting model 'Order'
-        db.delete_table(u'orders_order')
-
-        # Deleting model 'OrderList'
-        db.delete_table(u'orders_orderlist')
-
-
-    models = {
-        u'auth.group': {
-            'Meta': {'object_name': 'Group'},
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '80'}),
-            'permissions': ('django.db.models.fields.related.ManyToManyField', [], {'to': u"orm['auth.Permission']", 'symmetrical': 'False', 'blank': 'True'})
-        },
-        u'auth.permission': {
-            'Meta': {'ordering': "(u'content_type__app_label', u'content_type__model', u'codename')", 'unique_together': "((u'content_type', u'codename'),)", 'object_name': 'Permission'},
-            'codename': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'content_type': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['contenttypes.ContentType']"}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '50'})
-        },
-        u'auth.user': {
-            'Meta': {'object_name': 'User'},
-            'date_joined': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
-            'email': ('django.db.models.fields.EmailField', [], {'max_length': '75', 'blank': 'True'}),
-            'first_name': ('django.db.models.fields.CharField', [], {'max_length': '30', 'blank': 'True'}),
-            'groups': ('django.db.models.fields.related.ManyToManyField', [], {'to': u"orm['auth.Group']", 'symmetrical': 'False', 'blank': 'True'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'is_active': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
-            'is_staff': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'is_superuser': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'last_login': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
-            'last_name': ('django.db.models.fields.CharField', [], {'max_length': '30', 'blank': 'True'}),
-            'password': ('django.db.models.fields.CharField', [], {'max_length': '128'}),
-            'user_permissions': ('django.db.models.fields.related.ManyToManyField', [], {'to': u"orm['auth.Permission']", 'symmetrical': 'False', 'blank': 'True'}),
-            'username': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '30'})
-        },
-        u'contenttypes.contenttype': {
-            'Meta': {'ordering': "('name',)", 'unique_together': "(('app_label', 'model'),)", 'object_name': 'ContentType', 'db_table': "'django_content_type'"},
-            'app_label': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'model': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
-        },
-        u'customers.location': {
-            'Meta': {'object_name': 'Location'},
-            'additional_Info': ('django.db.models.fields.TextField', [], {'max_length': '250'}),
-            'address': ('django.db.models.fields.CharField', [], {'max_length': '140'}),
-            'created_by': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'location_creations'", 'to': u"orm['auth.User']"}),
-            'created_on': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'is_active': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
-            'modified_by': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'location_modifications'", 'to': u"orm['auth.User']"}),
-            'modified_on': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
-            'user': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auth.User']", 'null': 'True', 'blank': 'True'})
-        },
-        u'items.item': {
-            'Meta': {'object_name': 'Item'},
-            'created_by': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'item_creations'", 'to': u"orm['auth.User']"}),
-            'created_on': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'is_active': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
-            'item': ('django.db.models.fields.CharField', [], {'max_length': '140'}),
-            'modified_by': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'item_modifications'", 'to': u"orm['auth.User']"}),
-            'modified_on': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'})
-        },
-        u'orders.order': {
-            'Meta': {'object_name': 'Order'},
-            'cancelled_at': ('django.db.models.fields.DateTimeField', [], {'null': 'True'}),
-            'confirmed_at': ('django.db.models.fields.DateTimeField', [], {'null': 'True'}),
-            'created_by': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'order_creations'", 'to': u"orm['auth.User']"}),
-            'created_on': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
-            'delivered_at': ('django.db.models.fields.DateTimeField', [], {'null': 'True'}),
-            'enroute_at': ('django.db.models.fields.DateTimeField', [], {'null': 'True'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'is_active': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
-            'location': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['customers.Location']", 'null': 'True'}),
-            'modified_by': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'order_modifications'", 'to': u"orm['auth.User']"}),
-            'modified_on': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
-            'paid_at': ('django.db.models.fields.DateTimeField', [], {'null': 'True'}),
-            'recruited_at': ('django.db.models.fields.DateTimeField', [], {'null': 'True'}),
-            'stage': ('django.db.models.fields.CharField', [], {'default': "'S'", 'max_length': '1'}),
-            'started_at': ('django.db.models.fields.DateTimeField', [], {'null': 'True'}),
-            'user': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auth.User']", 'null': 'True'})
-        },
-        u'orders.orderlist': {
-            'Meta': {'object_name': 'OrderList'},
-            'created_by': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'orderlist_creations'", 'to': u"orm['auth.User']"}),
-            'created_on': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'is_active': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
-            'item': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['items.Item']"}),
-            'modified_by': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'orderlist_modifications'", 'to': u"orm['auth.User']"}),
-            'modified_on': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'})
-        }
-    }
-
-    complete_apps = ['orders']
+    operations = [
+        migrations.CreateModel(
+            name='Assignment',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('is_active', models.BooleanField(default=True, help_text=b'Whether this item is active, use this instead of deleting')),
+                ('created_on', models.DateTimeField(help_text=b'When this item was originally created', auto_now_add=True)),
+                ('modified_on', models.DateTimeField(help_text=b'When this item was last modified', auto_now=True)),
+                ('date', models.DateTimeField(auto_now=True, auto_now_add=True)),
+                ('created_by', models.ForeignKey(related_name='orders_assignment_creations', to=settings.AUTH_USER_MODEL, help_text=b'The user which originally created this item')),
+                ('item', models.ForeignKey(to='items.Item')),
+                ('modified_by', models.ForeignKey(related_name='orders_assignment_modifications', to=settings.AUTH_USER_MODEL, help_text=b'The user which last modified this item')),
+            ],
+            options={
+                'abstract': False,
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='Order',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('is_active', models.BooleanField(default=True, help_text=b'Whether this item is active, use this instead of deleting')),
+                ('created_on', models.DateTimeField(help_text=b'When this item was originally created', auto_now_add=True)),
+                ('modified_on', models.DateTimeField(help_text=b'When this item was last modified', auto_now=True)),
+                ('address', models.CharField(help_text=b'Where should we deliver, 140 characters.', max_length=140)),
+                ('stage', models.CharField(default=b'S', help_text=b'The state of this order', max_length=1)),
+                ('mobile', models.CharField(help_text=b'A number we can reach at.', max_length=15)),
+                ('comment', models.TextField(help_text=b'Anything else, in 140 characters.', max_length=140)),
+                ('created_by', models.ForeignKey(related_name='orders_order_creations', to=settings.AUTH_USER_MODEL, help_text=b'The user which originally created this item')),
+                ('modified_by', models.ForeignKey(related_name='orders_order_modifications', to=settings.AUTH_USER_MODEL, help_text=b'The user which last modified this item')),
+            ],
+            options={
+                'abstract': False,
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='OrderList',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('is_active', models.BooleanField(default=True, help_text=b'Whether this item is active, use this instead of deleting')),
+                ('created_on', models.DateTimeField(help_text=b'When this item was originally created', auto_now_add=True)),
+                ('modified_on', models.DateTimeField(help_text=b'When this item was last modified', auto_now=True)),
+                ('title', models.CharField(help_text=b'List name.', max_length=60)),
+                ('scheduled_time', models.CharField(help_text=b'When work should be done.', max_length=100, null=True, blank=True)),
+                ('created_by', models.ForeignKey(related_name='orders_orderlist_creations', to=settings.AUTH_USER_MODEL, help_text=b'The user which originally created this item')),
+                ('modified_by', models.ForeignKey(related_name='orders_orderlist_modifications', to=settings.AUTH_USER_MODEL, help_text=b'The user which last modified this item')),
+                ('order', models.ForeignKey(related_name=b'order_lists', blank=True, to='orders.Order', help_text=b'when created.', null=True)),
+                ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL, null=True)),
+            ],
+            options={
+                'abstract': False,
+            },
+            bases=(models.Model,),
+        ),
+        migrations.AddField(
+            model_name='assignment',
+            name='orderlist',
+            field=models.ForeignKey(to='orders.OrderList'),
+            preserve_default=True,
+        ),
+    ]
