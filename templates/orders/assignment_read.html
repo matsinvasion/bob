@@ -1,0 +1,62 @@
+{%extends "smartmin/read.html"%}
+{% load smartmin i18n %}
+{%block content%}
+{% block pjax%}
+ <div id="pjax" id="read_view">
+   <div class="row">
+     <div class="col-md-12 buttons">
+       {% block read-buttons %}
+       {% if view.edit_button %}
+       <a class="btn btn-primary pull-right" href="../../update/{{ object.id }}/">{% trans "edit" %}</a>
+       {% endif %}
+       {% endblock %}
+     </div>
+   </div>
+   <div class="row">
+
+     <div class="col-xs-6 col-md-4" style="width:270px;padding-left:-10px;text-transform:capitalize;">
+
+       <p style="color:#1c1c1c">{{user_info.username}}
+         <span style="padding-left:10px;color:#1c1c1c;float:right;">
+           {{task_info.mobile}}</span>
+       </p>
+       <!--show email -->
+       <p style="padding-top:5px;padding-bottom:5px; padding-left:15px;color:#1c1c1c">
+         {{user_info.email}}
+       </p>
+       <p style="padding-top:5px;padding-bottom:5px; padding-left:50px;color:#1c1c1c">
+         {{task_info.address}}
+      </p>
+
+     </div>
+     <div class="col-xs-12 col-md-8">
+       <!--List information-->
+      <div style="margin-top:-30px;text-align: center;">
+        <h2>Title: {{list_info.title}}<h2/>
+        <h4>Due by: {{list_info.scheduled_time}}</h4>
+        <p>Comment: {{task_info.comment}}</p>
+      </div>
+      <!--Table of tasks and notes-->
+      {% block fields %}
+      <table class="table table-striped">
+        <tbody>
+          {% for task in tasks %}
+          <tr class="read-{{task}}">
+            <td class="read-label">{{task.item_description}}</td>
+            <td class="read-value">{{task.note}}&nbsp;</td>
+          </tr>
+          {% endfor %}
+
+        {% block extra-fields %}
+        {% endblock extra-fields %}
+        </tbody>
+      </table>
+      {% endblock fields %}
+     </div>
+     </div>
+
+   </div>
+
+ </div>
+ {%endblock%}
+{%endblock%}
