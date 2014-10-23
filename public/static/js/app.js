@@ -81,19 +81,24 @@ create_itemresource = function ($scope, Restangular) {
 app.run(function(editableOptions){
   editableOptions.theme='bs3';
 })
-app.controller('assigntask',['$scope','Restangular','$state','$stateParams',function($scope,Restangular,$state,$stateParams){
+app.controller('assigntask',['$scope','ngProgress','Restangular','$state','$stateParams',function($scope,ngProgress,
+  Restangular,$state,$stateParams){
 
   $scope.assign=function(isValid){
+    //show progress
+    ngProgress.start();
+
     if(isValid){
-      user_object = Restangular.all('user').getList().then(function(user){
-        user_uri=user[0].resource_uri;
+      var user_object = Restangular.all('user').getList().then(function(user){
+        var user_uri=user[0].resource_uri;
 
-        //order objnect
-        order_object = {address:$scope.address,mobile:$scope.mobile,
+        //order object
+        var order_object = {address:$scope.address,mobile:$scope.mobile,
         comment:$scope.comment,created_by:user_uri,modified_by:user_uri};
-        patch_object=JSON.stringify({order:order_object});
+        var patch_object=JSON.stringify({order:order_object});
 
-        //update list to add order
+        //update list to
+        //create order
         Restangular.all('orderlist/'+$stateParams.id+'/').patch(patch_object).then(function(list){
           //create an instance of Assignment
           //use returned object from server per user
@@ -105,11 +110,14 @@ app.controller('assigntask',['$scope','Restangular','$state','$stateParams',func
           //make request
           Restangular.all('assignments/').post(assignment).then(function(){
             //success
+            //stop progress
+            ngProgress.complete();
             //dismiss modal
             $scope.$dismiss('saved');
             //transition to confirmation
             $state.transitionTo('lists.confirmation',null,{
-              reload:true
+              //dont reload
+              reload:false
             })
 
           },function(){
