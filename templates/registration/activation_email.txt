@@ -1,2 +1,7 @@
-http://{{site.domain}} {% url 'registration_activate' activation_key %}
+Thank you for creating an account with us. Please click the following link to activate your account.
+
+http://freshbunch.herokuapp.com{% url 'registration_activate' activation_key %}
 link is valid for {{expiration_days}} days.
+
+Thank's once again.
+The Team.
