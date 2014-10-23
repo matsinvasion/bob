@@ -2,12 +2,13 @@
 <html ng-app="GroceryList">
  <head>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{% block title %}dobbys | Have it easy{% endblock %}</title>
+  <title>{% block title %}Mark'shelp | Have it easy{% endblock %}</title>
   {% block styles %}
   <link rel="icon" href="{{ STATIC_URL }}img/new_fav.png" type="img/png">
   <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}freshcss/open-iconic-bootstrap.min.css">
   <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}freshcss/bootstrap.min.css">
   <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}freshcss/style.css">
+  <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}freshcss/ngProgress.css">
   <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}freshcss/xeditable.css">
   <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}freshcss/bootstrap-datetimepicker.min.css">
   <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}freshcss/fonts/glyphicons-halflings-regular.woff">
@@ -43,6 +44,7 @@
 
 
  <div style="clear: both;"></div>
+ <script type="text/javascript" src="{{ STATIC_URL }}js/ngProgress.min.js"></script>
  <script type="text/javascript" src="{{ STATIC_URL }}js/angular-ui-router.min.js"></script>
 
 <script type="text/javascript" src="{{STATIC_URL}}lib/jquery-1.7.2.js"></script>
@@ -54,6 +56,7 @@
   <script src="{{STATIC_URL}}js/restangular/node_modules/lodash/dist/lodash.min.js"></script>
 
   <script src="{{STATIC_URL}}js/app.js"></script>
+
   <script type="text/javascript" src="{{ STATIC_URL }}js/bootstrap.min.js"></script>
   <script type="text/javascript" src="{{ STATIC_URL }}js/xeditable.min.js"></script>
 
