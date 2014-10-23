@@ -1,6 +1,6 @@
 //declare app level module that depends on services,controllers
 //register e on module loading alternative symbols for our django environment
-app = angular.module('GroceryList',['restangular','xeditable','ui.bootstrap','ui.router',
+app = angular.module('GroceryList',[,'ngProgress','restangular','xeditable','ui.bootstrap','ui.router',
 'itemResourceController']).
   config(function($interpolateProvider,$httpProvider,RestangularProvider){
     $httpProvider.defaults.xsrfCookieName= 'csrftoken';
@@ -196,8 +196,8 @@ app.controller('edit',['$scope','$state','$stateParams','Restangular',function($
 }])
 //list  controller
 
-app.controller('listCtrl',['$scope','$document','$state','utils','$stateParams',
-'Restangular','$q',function($scope,$document,$state,utils,
+app.controller('listCtrl',['$scope','$document','ngProgress','$state','$timeout','utils','$stateParams',
+'Restangular','$q',function($scope,$document,ngProgress,$state,$timeout,utils,
   $stateParams,Restangular){
     //set list col height
   var lists_col = $document[0].getElementById('lists');
@@ -205,11 +205,15 @@ app.controller('listCtrl',['$scope','$document','$state','utils','$stateParams',
   //avail our scope in browser console
   window.listResource_SCOPE = $scope;
 
+  //get time
+  var start_time = new Date().getMilliseconds();
+  //start progress bar
+  ngProgress.color("#4286ca");
+  ngProgress.start();
 
   //GET current user
   //this is prbably wrong
-  console.log(Restangular.all('user'))
-  user_object = Restangular.all('user').getList().then(function(users){
+  var user_object = Restangular.all('user').getList().then(function(users){
 
     $scope.user=users[0].resource_uri;
     $scope.user_name=users[0].username;
@@ -219,13 +223,21 @@ app.controller('listCtrl',['$scope','$document','$state','utils','$stateParams',
 
 
     orderList_object = Restangular.all('orderlist/?user__username='+$scope.user_name+'&format=json&is_active=true');
-    $scope.lists = orderList_object.getList().$object;
+    orderList_object.getList().then(function(lists){
+      $scope.lists = lists;
+      //response time
+      var response_time = new Date().getMilliseconds();
+      var request_time = response_time - start_time;
+      //stop progress bar this point
+      ngProgress.complete();
+
+    });
     //how many lists does user own
     $scope.num_of_lists = function(){
       return $scope.lists.length;
     }
-    //current list
-    $scope.current_list=utils.getList($scope.lists,$stateParams.id);
+
+
     });
 
   //dismiss create list form | modal
@@ -524,8 +536,8 @@ app.config(['$stateProvider',function($stateProvider){
           keyboard:false,
           backdrop:'static',
           size:'lg',
-          //provide some logic
-         controller: 'listCtrl'
+          
+
 
         })
 
