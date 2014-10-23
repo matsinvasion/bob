@@ -1,6 +1,6 @@
 //declare app level module that depends on services,controllers
 //register e on module loading alternative symbols for our django environment
-app = angular.module('GroceryList',['restangular','xeditable','ui.bootstrap','ui.router',
+app = angular.module('GroceryList',[,'ngProgress','restangular','xeditable','ui.bootstrap','ui.router',
 'itemResourceController']).
   config(function($interpolateProvider,$httpProvider,RestangularProvider){
     $httpProvider.defaults.xsrfCookieName= 'csrftoken';
@@ -81,19 +81,24 @@ create_itemresource = function ($scope, Restangular) {
 app.run(function(editableOptions){
   editableOptions.theme='bs3';
 })
-app.controller('assigntask',['$scope','Restangular','$state','$stateParams',function($scope,Restangular,$state,$stateParams){
+app.controller('assigntask',['$scope','ngProgress','Restangular','$state','$stateParams',function($scope,ngProgress,
+  Restangular,$state,$stateParams){
 
   $scope.assign=function(isValid){
+    //show progress
+    ngProgress.start();
+
     if(isValid){
-      user_object = Restangular.all('user').getList().then(function(user){
-        user_uri=user[0].resource_uri;
+      var user_object = Restangular.all('user').getList().then(function(user){
+        var user_uri=user[0].resource_uri;
 
-        //order objnect
-        order_object = {address:$scope.address,mobile:$scope.mobile,
+        //order object
+        var order_object = {address:$scope.address,mobile:$scope.mobile,
         comment:$scope.comment,created_by:user_uri,modified_by:user_uri};
-        patch_object=JSON.stringify({order:order_object});
+        var patch_object=JSON.stringify({order:order_object});
 
-        //update list to add order
+        //update list to
+        //create order
         Restangular.all('orderlist/'+$stateParams.id+'/').patch(patch_object).then(function(list){
           //create an instance of Assignment
           //use returned object from server per user
@@ -105,11 +110,14 @@ app.controller('assigntask',['$scope','Restangular','$state','$stateParams',func
           //make request
           Restangular.all('assignments/').post(assignment).then(function(){
             //success
+            //stop progress
+            ngProgress.complete();
             //dismiss modal
             $scope.$dismiss('saved');
             //transition to confirmation
             $state.transitionTo('lists.confirmation',null,{
-              reload:true
+              //dont reload
+              reload:false
             })
 
           },function(){
@@ -196,8 +204,8 @@ app.controller('edit',['$scope','$state','$stateParams','Restangular',function($
 }])
 //list  controller
 
-app.controller('listCtrl',['$scope','$document','$state','utils','$stateParams',
-'Restangular','$q',function($scope,$document,$state,utils,
+app.controller('listCtrl',['$scope','$document','ngProgress','$state','$timeout','utils','$stateParams',
+'Restangular','$q',function($scope,$document,ngProgress,$state,$timeout,utils,
   $stateParams,Restangular){
     //set list col height
   var lists_col = $document[0].getElementById('lists');
@@ -205,11 +213,15 @@ app.controller('listCtrl',['$scope','$document','$state','utils','$stateParams',
   //avail our scope in browser console
   window.listResource_SCOPE = $scope;
 
+  //get time
+  var start_time = new Date().getMilliseconds();
+  //start progress bar
+  ngProgress.color("#4286ca");
+  ngProgress.start();
 
   //GET current user
   //this is prbably wrong
-  console.log(Restangular.all('user'))
-  user_object = Restangular.all('user').getList().then(function(users){
+  var user_object = Restangular.all('user').getList().then(function(users){
 
     $scope.user=users[0].resource_uri;
     $scope.user_name=users[0].username;
@@ -219,13 +231,21 @@ app.controller('listCtrl',['$scope','$document','$state','utils','$stateParams',
 
 
     orderList_object = Restangular.all('orderlist/?user__username='+$scope.user_name+'&format=json&is_active=true');
-    $scope.lists = orderList_object.getList().$object;
+    orderList_object.getList().then(function(lists){
+      $scope.lists = lists;
+      //response time
+      var response_time = new Date().getMilliseconds();
+      var request_time = response_time - start_time;
+      //stop progress bar this point
+      ngProgress.complete();
+
+    });
     //how many lists does user own
     $scope.num_of_lists = function(){
       return $scope.lists.length;
     }
-    //current list
-    $scope.current_list=utils.getList($scope.lists,$stateParams.id);
+
+
     });
 
   //dismiss create list form | modal
@@ -313,82 +333,6 @@ app.controller('listCtrl',['$scope','$document','$state','utils','$stateParams',
   };
 });
 
-
-//
-app.controller('createlist',['$scope','$stateParams','$state','Restangular',
-function($scope,$stateparams,$state,Restangular){
-
-  //GET current user
-  //this is prbably wrong
-  user_object = Restangular.all('user').getList().then(function(users){
-    $scope.user=users[0].resource_uri;
-    $scope.user_name=users[0].username;
-    //GET lists created by the user
-    //Restangular objects are self aware and can make know how to make their own requests
-    //$object enables use these lists in template
-
-  orderList_object = Restangular.all('orderlist/?user__username='+$scope.user_name+'&format=json&is_active=true');
-})
-  //create list
-  $scope.dismiss = function(){
-    $scope.$dismiss('dismmised')
-    //will redirect to the home list
-    $state.transitionTo('lists.list',$stateparams,{
-      //force transition default:false
-      reload:true,
-      //broadcast $stateChangeStart and $stateChangesuccess event default:false
-      notify:true,
-      //inherit url paramtere from current url
-      inherit:false
-    })
-  }//dismiss() ends here
-  $scope.listobject = {};
-  $scope.createlist=function(isValid){
-    if(isValid){
-      //object expected by resource
-      $scope.listobject = {title:$scope.list_name,scheduled_time:$scope.scheduledTime,created_by:$scope.user,modified_by:$scope.user,user:$scope.user};
-      $scope.submitted = true;
-      createListResource($scope,Restangular).then(
-                        function(list) {
-                            // success!
-                            //initialize list name field
-                            $scope.list_name = '';
-                            params={id:list.id}
-                            //transition to list/thislist.id
-                            $scope.$dismiss('saved');
-                            $state.transitionTo("lists.list",params,{
-                              //force transition default:false
-                              reload:true,
-                              //broadcast $stateChangeStart and $stateChangesuccess event default:false
-                              notify:true,
-                              //inherit url paramtere from current url
-                              inherit:false
-                            })
-                        },
-                        function (){
-                            // error!
-                            alert("jeeze something went wrong");
-                        })
-    }else if(!isValid){
-      console.log(isValid)
-      alert("Be sure to provide a List Title and Scheduled Time");
-    }
-  }//createlist()ends here
-
-}]).directive('datetimepicker',function(){
-  return {
-    require: "?ngModel",
-    restrict: "AE",
-    link: function(scope,elm,attr,ngModel){
-      $(elm).datetimepicker({});
-      $(elm).on('blur',function(value){
-        //set scheduledTime model value
-        scope.$apply(function(){ngModel.$setViewValue($(elm).datetimepicker().val());
-        });
-      });
-    }
-  };
-});
 
 app.config(['$stateProvider',function($stateProvider){
   //multiple views
@@ -525,7 +469,7 @@ app.config(['$stateProvider',function($stateProvider){
           backdrop:'static',
           size:'lg',
           //provide some logic
-         controller: 'listCtrl'
+
 
         })
 
