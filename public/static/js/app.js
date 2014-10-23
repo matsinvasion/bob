@@ -326,82 +326,6 @@ app.controller('listCtrl',['$scope','$document','ngProgress','$state','$timeout'
 });
 
 
-//
-app.controller('createlist',['$scope','$stateParams','$state','Restangular',
-function($scope,$stateparams,$state,Restangular){
-
-  //GET current user
-  //this is prbably wrong
-  user_object = Restangular.all('user').getList().then(function(users){
-    $scope.user=users[0].resource_uri;
-    $scope.user_name=users[0].username;
-    //GET lists created by the user
-    //Restangular objects are self aware and can make know how to make their own requests
-    //$object enables use these lists in template
-
-  orderList_object = Restangular.all('orderlist/?user__username='+$scope.user_name+'&format=json&is_active=true');
-})
-  //create list
-  $scope.dismiss = function(){
-    $scope.$dismiss('dismmised')
-    //will redirect to the home list
-    $state.transitionTo('lists.list',$stateparams,{
-      //force transition default:false
-      reload:true,
-      //broadcast $stateChangeStart and $stateChangesuccess event default:false
-      notify:true,
-      //inherit url paramtere from current url
-      inherit:false
-    })
-  }//dismiss() ends here
-  $scope.listobject = {};
-  $scope.createlist=function(isValid){
-    if(isValid){
-      //object expected by resource
-      $scope.listobject = {title:$scope.list_name,scheduled_time:$scope.scheduledTime,created_by:$scope.user,modified_by:$scope.user,user:$scope.user};
-      $scope.submitted = true;
-      createListResource($scope,Restangular).then(
-                        function(list) {
-                            // success!
-                            //initialize list name field
-                            $scope.list_name = '';
-                            params={id:list.id}
-                            //transition to list/thislist.id
-                            $scope.$dismiss('saved');
-                            $state.transitionTo("lists.list",params,{
-                              //force transition default:false
-                              reload:true,
-                              //broadcast $stateChangeStart and $stateChangesuccess event default:false
-                              notify:true,
-                              //inherit url paramtere from current url
-                              inherit:false
-                            })
-                        },
-                        function (){
-                            // error!
-                            alert("jeeze something went wrong");
-                        })
-    }else if(!isValid){
-      console.log(isValid)
-      alert("Be sure to provide a List Title and Scheduled Time");
-    }
-  }//createlist()ends here
-
-}]).directive('datetimepicker',function(){
-  return {
-    require: "?ngModel",
-    restrict: "AE",
-    link: function(scope,elm,attr,ngModel){
-      $(elm).datetimepicker({});
-      $(elm).on('blur',function(value){
-        //set scheduledTime model value
-        scope.$apply(function(){ngModel.$setViewValue($(elm).datetimepicker().val());
-        });
-      });
-    }
-  };
-});
-
 app.config(['$stateProvider',function($stateProvider){
   //multiple views
   //this is when a given state has several views e.g lists has
@@ -536,7 +460,7 @@ app.config(['$stateProvider',function($stateProvider){
           keyboard:false,
           backdrop:'static',
           size:'lg',
-          
+          //provide some logic
 
 
         })
