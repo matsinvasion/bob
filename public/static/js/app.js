@@ -137,7 +137,8 @@ app.controller('assigntask',['$scope','ngProgress','Restangular','$state','$stat
   $scope.dismiss = function(){
     $scope.$dismiss('dismmised')
     //will redirect to the home list
-    $state.transitionTo('lists.list',$stateparams,{
+    
+    $state.transitionTo('lists.list',$stateParams,{
       //force transition default:false
       reload:true,
       //broadcast $stateChangeStart and $stateChangesuccess event default:false
