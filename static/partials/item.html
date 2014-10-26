@@ -42,7 +42,7 @@
    </div>
 
    <!-- items already in lists-->
-   <ul style=""ng-repeat="item in list.item | orderBy:'-created_on'">
+   <ul style=""ng-repeat="item in list.item | isActive |orderBy:'-created_on'">
 
 
        <li class="list-unstyled" style="color:#ffffff;font-size:20px;">

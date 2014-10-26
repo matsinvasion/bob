@@ -137,7 +137,8 @@ app.controller('assigntask',['$scope','ngProgress','Restangular','$state','$stat
   $scope.dismiss = function(){
     $scope.$dismiss('dismmised')
     //will redirect to the home list
-    $state.transitionTo('lists.list',$stateparams,{
+    
+    $state.transitionTo('lists.list',$stateParams,{
       //force transition default:false
       reload:true,
       //broadcast $stateChangeStart and $stateChangesuccess event default:false
@@ -187,7 +188,7 @@ app.controller('edit',['$scope','$state','$stateParams','Restangular',function($
   //  var list_to_delete = $scope.lists[idx];
     //update to make on data
     var inactivate = {is_active:false}
-    var patch_update_data = JSON.stringify(inactivate)
+    var patch_update_dalta = JSON.stringify(inactivate)
     //update list
     Restangular.all('orderlist/'+id+'/').patch(patch_update_data)
     .then(function(){
@@ -202,6 +203,24 @@ app.controller('edit',['$scope','$state','$stateParams','Restangular',function($
     }
   }//end of delete
 }])
+//filter
+app.filter("isActive",function(){
+  return function(items,status){
+  filtered =[]
+  //items not yet available
+  if(items){
+    console.log(items)
+    for(var i=0;i<items.length;i++){
+      if(items[i].is_active==true){
+        filtered.push(items[i])
+      }
+
+    }
+  }
+  return filtered;
+
+  }
+})
 //list  controller
 
 app.controller('listCtrl',['$scope','$document','ngProgress','$state','$timeout','utils','$stateParams',
@@ -210,8 +229,7 @@ app.controller('listCtrl',['$scope','$document','ngProgress','$state','$timeout'
     //set list col height
   var lists_col = $document[0].getElementById('lists');
   if (lists_col){lists_col.style.minHeight=window.innerHeight+'px'};
-  //avail our scope in browser console
-  window.listResource_SCOPE = $scope;
+
 
   //get time
   var start_time = new Date().getMilliseconds();
@@ -385,7 +403,7 @@ app.config(['$stateProvider',function($stateProvider){
             console.log("item description is "+$scope.item_description)
 
               //populate view with new items
-              list_items.unshift({item_description:$scope.item_description,note:$scope.note,
+              list_items.unshift({is_active:true,item_description:$scope.item_description,note:$scope.note,
                 created_by:user,modified_by:user,item_stamp:$scope.random_number,
                 orderlist:$scope.list.resource_uri})
               //create new items
