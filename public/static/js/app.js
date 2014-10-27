@@ -137,7 +137,7 @@ app.controller('assigntask',['$scope','ngProgress','Restangular','$state','$stat
   $scope.dismiss = function(){
     $scope.$dismiss('dismmised')
     //will redirect to the home list
-    
+
     $state.transitionTo('lists.list',$stateParams,{
       //force transition default:false
       reload:true,
@@ -579,7 +579,7 @@ app.config(['$stateProvider',function($stateProvider){
     })//end of this state
     .state('lists.confirmation',{
       //confirm recieving of a list
-      url:'orderconfirmation',
+      url:'confirmation',
       templateUrl:'/static/partials/confirmation.html'
     })//end of confirmation state
   //  .state()
