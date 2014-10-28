@@ -26,7 +26,7 @@ def user_signup(sender,**kwargs):
   message = "Login to check em out."
   sender = " Sign up Notifications"
   if kwargs.get('created',True):
-    return send_mail(subject,message,sender,['markshelprwanda@gmail.com'])
+    return send_mail(subject,message,sender,['markmusasizi@gmail.com'])
   #handle a possible error here
   else:
    return None
