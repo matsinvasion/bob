@@ -39,10 +39,11 @@ class UserResource(ModelResource):
 
   #django-registration does the registering | consistency
   @staticmethod
-  def user_registration(username,email,password,site):
+  def user_registration(request,username,email,password,site):
     #use static method since we don't need an instance
     #without it we get a type error.
-    new_user = RegistrationProfile.objects.create_inactive_user(username,email,password,site)
+    new_user = RegistrationProfile.objects.create_inactive_user(username,email,
+    password,site,send_email=True,request=request)
 
     return new_user
 
@@ -55,12 +56,14 @@ class UserResource(ModelResource):
   def obj_create(self,bundle,**kwargs):
     #create inactive user and send email
     #have Django registration do this for us
-    raw_password,email,username = bundle.data["password"],bundle.data["email"],bundle.data["username"]
+    request = bundle.request
+    raw_password,email= bundle.data["password"],bundle.data["email"]
+    username=bundle.data["email"]
     if Site._meta.installed:
       site = Site.objects.get_current()
     else:
       site = RequestSite(bundle.request)
-    new_user=self.user_registration(username,email,raw_password,site)
+    new_user=self.user_registration(request,username,email,raw_password,site)
     signals.user_registered.send(sender=self.__class__,
                                         user=new_user,
                                         request=bundle.request)

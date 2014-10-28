@@ -1,7 +1,7 @@
 # Django settings for freshbunch project.
 import os
 
-DEBUG = False
+DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
@@ -148,6 +148,7 @@ INSTALLED_APPS = (
     'crispy_forms',
    'widget_tweaks',
     'tastypie',
+    'accounts',
  #   'registration',
     'smartmin',
 
@@ -184,8 +185,8 @@ CACHE = {
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'food4lessrwanda@gmail.com'
-EMAIL_HOST_PASSWORD = 'timewilltell89'
+EMAIL_HOST_USER = 'markshelprwanda@gmail.com'
+EMAIL_HOST_PASSWORD = 'timewilltell81'
 EMAIL_USE_TLS = True
 
 # A sample logging configuration. The only tangible logging

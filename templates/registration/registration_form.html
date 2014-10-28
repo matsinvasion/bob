@@ -27,9 +27,7 @@
    <div class="auth-form-body">
      <form method="post" action=".">
      {% csrf_token %}
-     {% render_field form.username placeholder="Username" class+="input-block" %}
-     {{form.username.errors}}
-     <br />
+     
      {% render_field form.email placeholder="Email" class+="input-block"%}
      {{form.email.errors}}
      <br />

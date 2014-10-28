@@ -3,7 +3,7 @@ import settings
 from tastypie.api import Api
 from public.api import *
 from public.views import home,landing
-
+import accounts
 
 #configure url hooks for our Apis.
 
@@ -33,7 +33,7 @@ urlpatterns = patterns('',
     url(r'^lists/', include('public.urls')),
     url(r'^api/', include(v1_api.urls)),
     #user default registration backend urlconf with django-registration
-    url(r'^accounts/', include('registration.backends.default.urls')),
+    url(r'^accounts/', include('accounts.urls')),
     url(r'^users/', include('smartmin.users.urls')),
     url(r'^orderlist/',include('orders.urls')),
 
