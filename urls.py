@@ -2,7 +2,7 @@ from django.conf.urls import patterns, include, url
 import settings
 from tastypie.api import Api
 from public.api import *
-from public.views import home,landing
+from public.views import inbox,landing, contact_us
 import accounts
 
 #configure url hooks for our Apis.
@@ -29,7 +29,8 @@ admin.autodiscover()
 urlpatterns = patterns('',
 
     url(r'^$',landing,name="landingpage"),
-    url(r'inbox/',home,name="homepage"),
+    url(r'inbox/',inbox,name="inbox"),
+    url(r'contactus/',contact_us,name="contact_us"),
     url(r'^lists/', include('public.urls')),
     url(r'^api/', include(v1_api.urls)),
     #user default registration backend urlconf with django-registration
