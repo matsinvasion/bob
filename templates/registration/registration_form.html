@@ -9,7 +9,7 @@
     border-radius:3px 3px 0 0
 }
 .auth-form-body{padding:20px;font-size:14px;background-color:#fff;
-  border:1px solid #d8dee2;border-top:0;border-radius:0 0 3px 3px}
+  border:1px solid #a4baca;border-top:0;border-radius:0 0 3px 3px}
   .auth-form-body .input-block {
     margin-bottom: 15px;
     margin-top: 5px;
@@ -20,14 +20,14 @@
 </style>
 <div class="container">
  <div class="auth-form">
-   <h3 style="padding-left:25%;text-transform:capitalize;color:#fff">Setup Account</h3>
+   <h3 style="padding-left:25%;text-transform:capitalize;color:#306088">Setup Account</h3>
    <div  class="auth-form-header">
      <h5 style="font-weight:bold;text-tranform:capitalize;"> Sign Up</h5>
    </div>
    <div class="auth-form-body">
      <form method="post" action=".">
      {% csrf_token %}
-     
+
      {% render_field form.email placeholder="Email" class+="input-block"%}
      {{form.email.errors}}
      <br />

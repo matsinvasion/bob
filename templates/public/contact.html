@@ -1,8 +1,6 @@
-{% extends "public_base.html" %}
-{% load i18n %}
-
+{% extends "public_base.html"%}
 {% block order-content %}
-{% load widget_tweaks%}
+{% load widget_tweaks %}
 <style>
   .auth-form{margin:60px auto;width:400px;}
   .auth-form-header{position:relative;padding:0px 20px;margin:0;color:#fff;
@@ -22,24 +20,25 @@
 </style>
 <div class="container">
  <div class="auth-form">
+   <h3 style="padding-left:25%;text-transform:capitalize;color:#306088">Leave a message</h3>
    <div  class="auth-form-header">
-     <h5 style="font-weight:bold;text-transform:capitalize">Sign In</h5>
+     <h5 style="font-weight:bold;text-transform:capitalize;">Mark'sHelp</h5>
    </div>
    <div class="auth-form-body">
      <form method="post" action=".">
      {% csrf_token %}
-     {% render_field form.username placeholder="Email" class+="input-block" %}
-     {{form.username.errors}}
+
+     {% render_field form.name placeholder="Name" class+="input-block"%}
+     {{form.name.errors}}
      <br />
-     {% render_field form.password placeholder="Password" class+="input-block"%}
-     {{form.password.errors}}
+     {% render_field form.email placeholder="Email" class+="input-block"%}
+     {{form.email.errors}}
      <br />
-     <input type="submit" class="btn btn-success btn-lng btn-block"value="Sign in" />
-     <input type="hidden" name="next" value="{{ next }}" />
+     {% render_field form.message placeholder="Message" class+="input-block"%}
+     {{form.Message.errors}}
+     <input type="submit" class="btn btn-success btn-lng btn-block"value="Signup"/>
+
      </form>
-     <p><a style="color:#3f729b;font-size:1.4rem;"href="{% url 'auth_password_reset' %}">{% trans "Forgot Password?" %}</a></p>
-
-
    </div>
  </div>
 </div>
