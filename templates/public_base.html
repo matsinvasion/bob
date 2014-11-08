@@ -46,9 +46,9 @@
     {% endif %}
     <li><a style="color:#3f729b;text-transform:capitalize;"href="{% url 'contact_us'%}">Contact Us</a></li>
     {% if user.is_authenticated %}
-    <li > <a href="{%url 'auth_logout'%}"style="color:#3f729b;text-transform:capitalize">Log out</a></li>
+    <li > <a href="{%url 'users.user_logout'%}"style="color:#3f729b;text-transform:capitalize">Log out</a></li>
     {% else %}
-    <li > <a href="{%url 'auth_login'%}"style="color:#3f729b;text-transform:capitalize">Sign in</a></li>
+    <li > <a href="{%url 'users.user_login'%}"style="color:#3f729b;text-transform:capitalize">Sign in</a></li>
     {% endif %}
 
  </ul>
