@@ -137,7 +137,7 @@ app.controller('assigntask',['$scope','ngProgress','Restangular','$state','$stat
   $scope.dismiss = function(){
     $scope.$dismiss('dismmised')
     //will redirect to the home list
-    
+
     $state.transitionTo('lists.list',$stateParams,{
       //force transition default:false
       reload:true,
@@ -242,13 +242,17 @@ app.controller('listCtrl',['$scope','$document','ngProgress','$state','$timeout'
   var user_object = Restangular.all('user').getList().then(function(users){
 
     $scope.user=users[0].resource_uri;
-    $scope.user_name=users[0].username;
+    var cutoff_index= users[0].username.indexOf("@")
+    //slice for viewing purposes
+    $scope.user_name=users[0].username.slice(0,cutoff_index);
+    //the recongnised username in database
+    $scope.complete_username=users[0].username
     //GET lists created by the user
     //Restangular objects are self aware and can make know how to make their own requests
     //$object enables use these lists in template
 
 
-    orderList_object = Restangular.all('orderlist/?user__username='+$scope.user_name+'&format=json&is_active=true');
+    orderList_object = Restangular.all('orderlist/?user__username='+$scope.complete_username+'&format=json&is_active=true');
     orderList_object.getList().then(function(lists){
       $scope.lists = lists;
       //response time
@@ -579,7 +583,7 @@ app.config(['$stateProvider',function($stateProvider){
     })//end of this state
     .state('lists.confirmation',{
       //confirm recieving of a list
-      url:'orderconfirmation',
+      url:'confirmation',
       templateUrl:'/static/partials/confirmation.html'
     })//end of confirmation state
   //  .state()
