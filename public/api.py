@@ -6,7 +6,7 @@ from tastypie.authorization import Authorization, DjangoAuthorization
 from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
 from django.contrib.auth import authenticate, login, logout
-from tastypie.http import HttpUnauthorized, HttpForbidden
+from tastypie.http import HttpUnauthorized, HttpForbidden,HttpBadRequest
 from django.conf.urls import url
 from tastypie.utils import trailing_slash
 import datetime
@@ -15,6 +15,9 @@ from registration.models import RegistrationProfile
 from registration import signals
 from django.contrib.sites.models import Site, RequestSite
 from tastypie.cache import SimpleCache
+from tastypie.exceptions import BadRequest, ApiFieldError
+from django.core.exceptions import ValidationError
+from django.views.decorators.csrf import csrf_exempt
 
 
 
@@ -53,7 +56,7 @@ class UserResource(ModelResource):
     if user:
       if user.is_active:
         login(request,user)
-        return self.create_response(request, {'success': True})
+        return self.create_response(request, {'success': True,"user_id":request.user.d})
       else:
         return self.create_response(request, {
                     'success': False,
@@ -62,7 +65,7 @@ class UserResource(ModelResource):
     else:
       return self.create_response(request, {
                 'success': False,
-                'reason': 'incorrect',
+                'reason': 'incorrect, not authorized to make this request',
                 }, HttpUnauthorized )
 
   def logout(self, request, **kwargs):
@@ -72,11 +75,6 @@ class UserResource(ModelResource):
             return self.create_response(request, { 'success': True })
         else:
             return self.create_response(request, { 'success': False }, HttpUnauthorized)
-
-
-
-
-
 
 
 
@@ -100,16 +98,20 @@ class UserResource(ModelResource):
   def obj_create(self,bundle,**kwargs):
     #create inactive user and send email
     #have Django registration do this for us
-    request = bundle.request
+    #handle workload to tastypie,
+    #else we get a valueerror because we are
+    #not leaving out some activities
+
+
     raw_password,email= bundle.data["password"],bundle.data["email"]
     username=bundle.data["email"]
     if Site._meta.installed:
       site = Site.objects.get_current()
     else:
       site = RequestSite(bundle.request)
-    new_user=self.user_registration(request,username,email,raw_password,site)
+    bundle.obj=self.user_registration(bundle.request,username,email,raw_password,site)
     signals.user_registered.send(sender=self.__class__,
-                                        user=new_user,
+                                        user=bundle.obj,
                                         request=bundle.request)
     return bundle
 
@@ -120,6 +122,46 @@ class UserResource(ModelResource):
   def authorized_read_list(self,object_list,bundle):
     current_user = object_list.filter(id=bundle.request.user.id)
     return current_user
+
+
+    def wrap_view(self,view):
+      """
+      Wrap views to create custom errors instead of generic 500's.
+      """
+
+    #  import pdb;pdb.set_trace()
+      @csrf_exempt
+
+      def wrapper(request,*args,**kwargs):
+
+        try:
+          callback = getattr(self,view)
+          response = callback(request,*args,**kwargs)
+
+
+          if request.is_ajax():
+            patch_cache_control(response, no_cache=True)
+
+
+          #response is a HttpResponse object, so follow Django's instructions
+          # to change it to your needs before you return it.
+          # https://docs.djangoproject.com/en/dev/ref/request-response/
+
+          return response
+        except (BadRequest, ApiFieldError), e:
+          return HttpBadRequest({'code': 666, 'message':e.args[0]})
+        except ValidationError, e:
+          # Or do some JSON wrapping around the standard 500
+          return HttpBadRequest({'code': 777, 'message':', '.join(e.messages)})
+        except Exception, e:
+
+          # Rather than re-raising, we're going to things similar to
+          # what Django does. The difference is returning a serialized
+          # error message.
+          return self._handle_500(request, e)
+
+      return wrapper
+
 #curl -v -X POST -d '{"email":"gwen@gmail.com","username":"gwen","password":"model"}' -H "Content-Type:application/json" http://127.0.0.1:8000/api/v1/user/
 
 
