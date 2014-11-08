@@ -5,15 +5,18 @@
 
   }
 </style>
-<div class="container-fluid">
+<div class="container-fluid"style="background-image:url(/static/partials/04.jpg)">
 <div class="row">
 <div id="lists"class="col-md-4" style="background-color:#ffffff;width:270px;padding-left:-10px;">
-<div style="margin-left:4px;text-transform:capitalize;"ng-controller="listCtrl">
-  <p style="color:#1c1c1c">[[user_name]]<span style="padding-left:10px;">
-  <a href="/users/logout/"style="color:#1c1c1c;float:right;">logout</a></span>
+<div style="margin-left:4px;"ng-controller="listCtrl">
+  <p>
+  <a href="/"style="color:#3f729b">Hi [[user_name]]</a>
+  <a href="/users/logout/" class="glyphicon glyphicon-log-out" style="padding-left:60px; font-size:14px;color:#3f729b">
+  </a>
   </p>
-  <div style="padding-top:5px;padding-bottom:5px; padding-left:40%;font-size:20px;color:#a3a3a2">
-    <a ui-sref="lists.createlist" class="btn btn-primary">Add List</a>
+
+  <div style="padding-top:5px;padding-bottom:5px; padding-left:30%;font-size:20px;color:#a3a3a2">
+    <a ui-sref="lists.createlist" class="btn btn-primary">Create List</a>
     <!--<a ui-sref="lists.createlist"><span class="glyphicon glyphicon-add-circle"style="padding-left:40%;font-size:20px;color:#a3a3a2"></a></span>-->
   </div>
 
@@ -27,7 +30,7 @@
         style="font-family:Lato,Helvetica Nue,Arial,Sans-serif;font-size:15px;color:#1c1c1c;padding-left:6px;font-weight:400;">
         [[list.title]]</a></span>
        <span style="float:right">
-         <a ui-sref="lists.edit({id:list.id})">Edit</a></span></li>
+         <a style="color:#3f729b;"ui-sref="lists.edit({id:list.id})">Edit</a></span></li>
 
    </li>
 
@@ -39,7 +42,7 @@
 
 </div>
 </div>
-<div id="item" class="col-md-8">
+<div id="item" class="col-md-8" >
   <div ui-view ></div>
 </div>
 </div>
