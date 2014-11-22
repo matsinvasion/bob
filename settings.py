@@ -185,8 +185,8 @@ CACHE = {
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'markshelprwanda@gmail.com'
-EMAIL_HOST_PASSWORD = 'timewilltell81'
+EMAIL_HOST_USER = '' #provide email address of user
+EMAIL_HOST_PASSWORD = '' #provide password to email which do sending
 EMAIL_USE_TLS = True
 
 # A sample logging configuration. The only tangible logging
